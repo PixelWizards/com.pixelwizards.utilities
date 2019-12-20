@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
 namespace PixelWizards.Utilities
 {
     public static class ResetParentTransform
     {
-        [MenuItem("Tools/Edit/Reset Parent Transform %_r", false, 0)]
+        [MenuItem("Tools/Edit/Reset Parent Transform", false, 0)]
+#if UNITY_2019_1_OR_NEWER
+        [Shortcut("GameObject/Reset Parent Transforms", KeyCode.R, ShortcutModifiers.Alt)]
+#endif
         public static void DistributeObjectsEvenly()
         {
-            var selectedObjects = Selection.gameObjects;
-            var sourcePosition = selectedObjects[0];
+            var selectedObjects = Selection.gameObjects;            
             Undo.RegisterCompleteObjectUndo(selectedObjects, "Reset Parent Transforms");
 
             foreach (GameObject selectedObject in selectedObjects)
