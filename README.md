@@ -1,2 +1,26 @@
-# com.pixelwizards.utilities
-Some Unity utilities (UV tools, resource checker etc) packaged for Unity's Package Manager
+com.pixelwizards.utilities
+=========================
+
+Some useful Utility tools for Unity
+
+Prerequistes
+---------------
+* This has been tested for `>= 2018.3`
+
+Content
+----------------
+
+### Tools
+
+* Window/Analysis/UVPreview - preview model UV in the Editor
+* Window/Analysis/UVInspector- another tool to preview model UV in the Editor
+* Tools/ResourceChecker - shows resources loaded in a scene, very useful for optimizing builds
+* various other tools - 'Create GameObject at Root' etc
+
+### Samples
+
+* None currently
+
+Required dependencies
+---------------
+* None 

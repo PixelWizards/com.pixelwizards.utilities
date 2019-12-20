@@ -1,0 +1,14 @@
+{
+  "name": "com.pixelwizards.utilities",
+  "displayName": "PixelWizards - Utilities",
+  "version": "0.1.0-preview.2",
+  "unity": "2018.4",
+  "description": "Editor tools for Unity Development",
+  "author": {
+    "name": "Pixel Wizards",
+    "email": "support@pixelwizards.ca",
+    "url": "https://github.com/PixelWizards"
+  },
+  "keywords": [],
+  "dependencies": {}
+}
