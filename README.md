@@ -3,6 +3,13 @@ com.pixelwizards.utilities
 
 Some useful Utility tools for Unity
 
+Usage
+--------------
+
+Add this to your project manifest.json
+
+"com.pixelwizards.utilities": "https://github.com/PixelWizards/com.pixelwizards.utilities.git",
+
 Prerequistes
 ---------------
 * This has been tested for `>= 2018.3`
