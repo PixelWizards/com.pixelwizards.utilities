@@ -1,6 +1,8 @@
 {
     "name": "com.pixelwizards.utilities.editor",
-    "references": [],
+    "references": [
+        "GUID:b9f01df36c2302448bf8e98b17baac43"
+    ],
     "includePlatforms": [
         "Editor"
     ],
