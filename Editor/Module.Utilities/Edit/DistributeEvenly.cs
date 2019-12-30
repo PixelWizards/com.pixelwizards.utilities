@@ -2,7 +2,7 @@
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
-namespace MWU.Shared.Utilities
+namespace PixelWizards.Utilities
 {
     public static class DistributeEvenly
     {

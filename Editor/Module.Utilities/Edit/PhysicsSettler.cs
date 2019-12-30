@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
 
-namespace MWU.Shared.Utilities
+namespace PixelWizards.Utilities
 {
 
     // This causes the class' static constructor to be called on load and on starting playmode
