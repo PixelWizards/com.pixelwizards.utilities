@@ -1,14 +1,28 @@
 com.pixelwizards.utilities
 =========================
 
+[![openupm](https://img.shields.io/npm/v/com.pixelwizards.utilities?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.pixelwizards.utilities/)
+
 Some useful Utility tools for Unity
 
 Usage
 --------------
 
+### Install via OpenUPM
+
+The package is available on the [openupm registry](https://openupm.com). It's recommended to install it via [openupm-cli](https://github.com/openupm/openupm-cli).
+
+```
+openupm add com.pixelwizards.utilities
+```
+
+### Install via git url
+
 Add this to your project manifest.json
 
+```
 "com.pixelwizards.utilities": "https://github.com/PixelWizards/com.pixelwizards.utilities.git",
+```
 
 OpenUPM Support
 ----------------
