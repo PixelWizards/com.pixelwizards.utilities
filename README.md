@@ -10,6 +10,12 @@ Add this to your project manifest.json
 
 "com.pixelwizards.utilities": "https://github.com/PixelWizards/com.pixelwizards.utilities.git",
 
+OpenUPM Support
+----------------
+
+This package is also available via the OpenUPM scoped registry: 
+https://openupm.com/packages/com.pixelwizards.utilities/
+
 Prerequistes
 ---------------
 * This has been tested for `>= 2018.3`
