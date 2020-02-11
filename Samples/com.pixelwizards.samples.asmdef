@@ -1,11 +1,9 @@
 {
-    "name": "com.pixelwizards.utilities.editor",
+    "name": "com.pixelwizards.samples",
     "references": [
         "GUID:8bc9e25d95a09e246a7e2250654ed8b4"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

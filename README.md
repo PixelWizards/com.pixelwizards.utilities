@@ -39,6 +39,7 @@ Content
 
 ### Tools
 
+* Assets/Create/Scene Management/Multi-Scene Loader - multi scene loading system (see Samples for Runtime API usage as well!)
 * Tools/Texture Combiner - lets you pack texture channels (combine multiple maps for HDRP textures etc)
 * Tools/ResourceChecker - shows resources loaded in a scene, very useful for optimizing builds
 * Edit/Distribute/Along X / Y / Z - distributes selected game objects in the scene
