@@ -3,7 +3,9 @@ com.pixelwizards.utilities
 
 [![openupm](https://img.shields.io/npm/v/com.pixelwizards.utilities?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.pixelwizards.utilities/)
 
-Some useful Utility tools for Unity
+Some useful Utility tools for Unity.
+
+Note: this repo uses Git LFS 
 
 Usage
 --------------
