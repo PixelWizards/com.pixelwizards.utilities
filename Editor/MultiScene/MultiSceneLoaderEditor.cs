@@ -212,21 +212,22 @@ namespace PixelWizards.MultiScene
                 GUILayout.Space(5f);
                 GUILayout.EndScrollView();
             }
-
             EditorGUILayout.Space(10f);
-
+            
+            // show the load all scenes button all of the time
+            GUILayout.Label(Loc.LoadAllScenes, EditorStyles.boldLabel);
+            EditorGUILayout.Space(5);
+            if (GUILayout.Button(Loc.LoadAllScenes, GUILayout.MinHeight(100), GUILayout.Height(35)))
+                sceneConfig.LoadAllScenes();
+            GUILayout.Label(Loc.LoadAllScenesDesc, EditorStyles.helpBox);
+            EditorGUILayout.Space(5);
+            
+            // the sub scene loader if users want to 
             botToggle = EditorGUILayout.Foldout(botToggle, Loc.SceneLoading);
             if (botToggle)
             {
                 botScroll = GUILayout.BeginScrollView(botScroll, false, true);
                 {
-                    EditorGUILayout.Space(5);
-                    GUILayout.Label(Loc.LoadAllScenes, EditorStyles.boldLabel);
-                    EditorGUILayout.Space(5);
-                    if (GUILayout.Button(Loc.LoadAllScenes, GUILayout.MinHeight(100), GUILayout.Height(35)))
-                        sceneConfig.LoadAllScenes();
-                    GUILayout.Label(Loc.LoadAllScenesDesc, EditorStyles.helpBox);
-
                     EditorGUILayout.Space(5);
                     GUILayout.Label(Loc.LoadSubScenes, EditorStyles.boldLabel);
                     GUILayout.Label(Loc.LoadSubScenesDesc, EditorStyles.helpBox);
