@@ -48,14 +48,15 @@ namespace PixelWizards.Utilities
 
             Undo.RegisterCompleteObjectUndo(transforms, "Replace Selection");
 
-            foreach (Transform t in transforms)
+            for(int i = 0; i <transforms.Length; i++)
             {
+                var t = transforms[i];
                 var pref = PrefabUtility.GetPrefabAssetType(replacement);
                 var g = (GameObject)PrefabUtility.InstantiatePrefab(replacement);
 
                 Transform gTransform = g.transform;
                 gTransform.parent = t.parent;
-                g.name = replacement.name;
+                g.name = replacement.name + "_" + i;
                 gTransform.localPosition = t.localPosition;
                 gTransform.localScale = t.localScale;
                 gTransform.localRotation = t.localRotation;
