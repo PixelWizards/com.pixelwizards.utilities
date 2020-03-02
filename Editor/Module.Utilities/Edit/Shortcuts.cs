@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.Reflection;
+using UnityEditor.ShortcutManagement;
 
 namespace PixelWizards.Utilities
 {
@@ -50,7 +51,10 @@ namespace PixelWizards.Utilities
             }
         }
 
-        [MenuItem("Tools/Edit/Find In Project %g", false, 3)]
+        [MenuItem("Edit/Find In Project", false, 3)]
+#if UNITY_2019_1_OR_NEWER
+        [Shortcut("Edit/Find In Project", KeyCode.G, ShortcutModifiers.Alt)]
+#endif
         public static void ProjectSearch()
         {
             // Get the internal UnityEditor.ObjectBrowser window
@@ -67,7 +71,10 @@ namespace PixelWizards.Utilities
             win.SendEvent(e);
         }
 
-        [MenuItem("Tools/Edit/Create Group %#g", false, 4)]
+        [MenuItem("Edit/Group/Create Group", false, 4)]
+#if UNITY_2019_1_OR_NEWER
+        [Shortcut("Edit/Group/Create Group", KeyCode.G, ShortcutModifiers.Alt | ShortcutModifiers.Shift)]
+#endif
         public static void CreateGroup()
         {
             GameObject newGO = new GameObject("Group");
@@ -77,7 +84,10 @@ namespace PixelWizards.Utilities
             CenterOnChildren();
         }
 
-        [MenuItem("Tools/Edit/Center Group on Children", false, 5)]
+        [MenuItem("Edit/Group/Center Group on Children", false, 5)]
+#if UNITY_2019_1_OR_NEWER
+        [Shortcut("Edit/Group/Center Group on Children", KeyCode.G, ShortcutModifiers.Alt)]
+#endif
         public static void CenterOnChildren()
         {
             foreach (Transform root in Selection.GetFiltered(typeof(Transform), SelectionMode.TopLevel | SelectionMode.ExcludePrefab | SelectionMode.Editable))
@@ -107,13 +117,13 @@ namespace PixelWizards.Utilities
             }
         }
 
-        [MenuItem("Tools/Edit/Disable All Gizmos")]
+        [MenuItem("Edit/Disable All Gizmos")]
         public static void DisableAllGizmos()
         {
             ToggleGizmos(0);
         }
 
-        [MenuItem("Tools/Edit/Enable All Gizmos")]
+        [MenuItem("Edit/Enable All Gizmos")]
         public static void EnableAllGizmos()
         {
             ToggleGizmos(1);

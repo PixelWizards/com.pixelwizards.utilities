@@ -13,7 +13,7 @@ namespace PixelWizards.Utilities
 
         private static bool _bHaveRun;
 
-        [MenuItem("Tools/Cleanup/Find and Remove Missing Scripts", false, 0)]
+        [MenuItem("Assets/Cleanup/Find and Remove Missing Scripts", false, 0)]
         public static void ShowWindow()
         {
             GetWindow(typeof(FindMissingScriptsRecursivelyAndRemove));

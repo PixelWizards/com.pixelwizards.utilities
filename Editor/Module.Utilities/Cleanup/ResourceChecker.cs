@@ -16,8 +16,6 @@ using Object = UnityEngine.Object;
 
 namespace PixelWizards.Utilities
 {
-
-
 	public class TextureDetails : IEquatable<TextureDetails>
 	{
 		public bool isCubeMap;
@@ -98,8 +96,6 @@ namespace PixelWizards.Utilities
 
 	public class ResourceChecker : EditorWindow
 	{
-
-
 		string[] inspectToolbarStrings = { "Textures", "Materials", "Meshes" };
 		string[] inspectToolbarStrings2 = { "Textures", "Materials", "Meshes", "Missing" };
 
@@ -139,7 +135,7 @@ namespace PixelWizards.Utilities
 
 		bool collectedInPlayingMode;
 
-		[MenuItem("Tools/Cleanup/Resource Checker")]
+		[MenuItem("Window/Analysis/Resource Checker")]
 		static void Init()
 		{
 			ResourceChecker window = (ResourceChecker)EditorWindow.GetWindow(typeof(ResourceChecker));

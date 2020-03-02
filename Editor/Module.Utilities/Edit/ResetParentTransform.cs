@@ -7,7 +7,7 @@ namespace PixelWizards.Utilities
 {
     public static class ResetParentTransform
     {
-        [MenuItem("Tools/Edit/Reset Parent Transform", false, 0)]
+        [MenuItem("Edit/Reset Parent Transform", false, 0)]
 #if UNITY_2019_1_OR_NEWER
         [Shortcut("GameObject/Reset Parent Transforms", KeyCode.R, ShortcutModifiers.Alt)]
 #endif

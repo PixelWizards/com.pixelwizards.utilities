@@ -12,7 +12,7 @@ namespace PixelWizards.Utilities
 {
 	public class TextureCombiner : EditorWindow
 	{
-		[MenuItem("Tools/Texture Combiner...")]
+		[MenuItem("Assets/Texture Combiner...")]
 		static void Open()
 		{
 			var w = GetWindow<TextureCombiner>(true, "Texture Combiner");

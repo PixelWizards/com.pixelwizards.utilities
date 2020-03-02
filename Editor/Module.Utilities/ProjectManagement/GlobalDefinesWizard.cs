@@ -40,7 +40,7 @@ namespace PixelWizards.Utilities
         public List<GlobalDefine> _globalDefines = new List<GlobalDefine>();
 
 
-        [MenuItem("Tools/Edit/Global Defines", false, 0)]
+        [MenuItem("Edit/Global Defines", false, 10)]
         static void createWizardFromMenu( )
         {
             var helper = ScriptableWizard.DisplayWizard<GlobalDefinesWizard>("Global Defines Manager", "Save", "Cancel");

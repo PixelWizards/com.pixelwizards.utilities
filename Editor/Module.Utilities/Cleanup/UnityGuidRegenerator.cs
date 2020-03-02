@@ -7,7 +7,7 @@ namespace PixelWizards.Utilities
 {
     public class UnityGuidRegeneratorMenu
     {
-        [MenuItem("Tools/Cleanup/Regenerate asset GUIDs", false, 0)]
+        [MenuItem("Assets/Cleanup/Regenerate asset GUIDs", false, 0)]
         public static void RegenerateGuids()
         {
             if (EditorUtility.DisplayDialog("GUIDs regeneration",

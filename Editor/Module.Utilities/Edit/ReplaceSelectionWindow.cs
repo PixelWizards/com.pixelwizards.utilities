@@ -17,7 +17,7 @@ namespace PixelWizards.Utilities
         private static GameObject replacement = null;
         private static bool keep = false;
 
-        [MenuItem("Edit/Replace Selection")]
+        [MenuItem("Edit/Replace Selection", false, -1)]
         private static void ShowWindow()
         {
             GetWindow<ReplaceSelectionWindow>(false, "Replace Selection", true);

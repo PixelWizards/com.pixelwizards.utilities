@@ -42,11 +42,19 @@ Content
 ### Tools
 
 * Assets/Create/Scene Management/Multi-Scene Loader - multi scene loading system (see Samples for Runtime API usage as well!)
-* Tools/Texture Combiner - lets you pack texture channels (combine multiple maps for HDRP textures etc)
-* Tools/ResourceChecker - shows resources loaded in a scene, very useful for optimizing builds
+* Assets/Texture Combiner - lets you pack texture channels (combine multiple maps for HDRP textures etc)
+* Assets/Find all References - find all references of a given object
+* Window/Analysis/ResourceChecker - shows resources loaded in a scene, very useful for optimizing builds
 * Edit/Distribute/Along X / Y / Z - distributes selected game objects in the scene
 * Edit/Physics Settler - allows you to activate physics in edit mode to 'drop' / settle objects dynamically
 * various other tools - 'Create GameObject at Root' etc
+* Edit/Find in Project
+* Edit/Group - create groups from gameobjects
+* Edit/Reset Parent Transform - if you have groups you want to reset the parent transform position 
+* Edit/Global Defines wizard - manage your .rsp files
+* Edit/Enable / Disable Gizmos
+* Edit/Replace Materials in object
+* Edit/Replace Selection - bulk replace objects in a scene
 
 ### Samples
 

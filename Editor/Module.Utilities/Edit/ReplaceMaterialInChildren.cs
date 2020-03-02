@@ -14,19 +14,11 @@ namespace PixelWizards.Utilities
     {
         public Material newMaterial = null;
 
-        [MenuItem("Tools/Edit/Replace Materials in Children... %#_h")]
+        [MenuItem("Edit/Replace Materials in Children")]
         static void CreateWizard()
         {
             ScriptableWizard.DisplayWizard(
                 "Replace Materials in Children", typeof(ReplaceMaterialInChildren), "Replace");
-        }
-
-        public ReplaceMaterialInChildren()
-        {
-        }
-
-        void OnWizardUpdate()
-        {
         }
 
         void OnWizardCreate()

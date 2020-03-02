@@ -32,7 +32,7 @@ namespace PixelWizards.Utilities
     {
         Vector2 scrollPosition = Vector2.zero;
 
-        [MenuItem("/Tools/Debug/Call Stack", false, 0)]
+        [MenuItem("Window/Analysis/Call Stack", false, 0)]
         static void Init()
         {
             ConsoleCallStackHelper window = EditorWindow.GetWindow<ConsoleCallStackHelper>();
