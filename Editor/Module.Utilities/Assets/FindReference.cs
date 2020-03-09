@@ -11,7 +11,7 @@ namespace PixelWizards.Utilities
 {
     public static class FindReferenceEditorTool
     {
-        [MenuItem("Assets/Find all references #%&f", false, 0)]
+        [MenuItem("Assets/Find all references", false, 500)]
         public static void FindAllReferencesToGameObject()
         {
             var go = Selection.activeGameObject;
