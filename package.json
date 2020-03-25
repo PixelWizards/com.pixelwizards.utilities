@@ -3,11 +3,15 @@
   "displayName": "PixelWizards - Utilities",
   "version": "0.2.0-preview.1",
   "unity": "2018.4",
-  "description": "Editor tools for Unity Development",
+  "description": "Editor tools for Unity Development. \n\nSee https://github.com/PixelWizards/com.pixelwizards.utilities for details and documentation",
   "author": {
     "name": "Pixel Wizards",
     "email": "support@pixelwizards.ca",
     "url": "https://github.com/PixelWizards"
   },
-  "keywords": []
+  "keywords": [],
+  "dependencies": {
+    "com.unity.timeline": "1.2.6"
+  },
+  "type": "library"
 }
