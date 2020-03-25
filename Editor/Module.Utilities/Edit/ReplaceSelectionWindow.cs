@@ -6,6 +6,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Linq;
 
 namespace PixelWizards.Utilities
 {
@@ -16,6 +17,7 @@ namespace PixelWizards.Utilities
 
         private static GameObject replacement = null;
         private static bool keep = false;
+        private static bool applyChangesInChildren = false;
 
         [MenuItem("Edit/Replace Selection", false, -1)]
         private static void ShowWindow()
@@ -42,6 +44,13 @@ namespace PixelWizards.Utilities
                 GUILayout.Space(5f);
 
                 keep = EditorGUILayout.Toggle("Keep Originals", keep);
+                GUILayout.Label("Should we keep the original GameObjects or remove them?", EditorStyles.helpBox);
+
+                GUILayout.Space(10f);
+
+                applyChangesInChildren = EditorGUILayout.Toggle("Apply Transform Changes in Children", applyChangesInChildren);
+                GUILayout.Label("Attempt to apply Transform changes in child objects?", EditorStyles.helpBox);
+
                 GUILayout.Space(10f);
 
                 if ( GUILayout.Button("Replace Selection", GUILayout.Height(35f)))
@@ -74,6 +83,28 @@ namespace PixelWizards.Utilities
                 gTransform.localPosition = t.localPosition;
                 gTransform.localScale = t.localScale;
                 gTransform.localRotation = t.localRotation;
+
+                if( applyChangesInChildren)
+                {
+                    var count = t.childCount;
+                    for( int j = 0; j < count; j++)
+                    {
+                        var child = t.GetChild(j);
+                        var newChildren = g.GetComponentsInChildren<Transform>().ToList();
+                        if (newChildren.Contains(child))
+                        {
+                            // found match in the new prefab
+                            var newChild = newChildren.FirstOrDefault(n => n.name == child.name);
+                            newChild.position = child.position;
+                            newChild.rotation = child.rotation;
+                            newChild.localScale = child.localScale;
+                        }
+                        else
+                        {
+                            Debug.Log("Existing child " + child.name + " does not existing in new prefab?");
+                        }
+                    }
+                }
             }
 
             if (!keep)
