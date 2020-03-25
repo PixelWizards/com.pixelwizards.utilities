@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace MWU.FilmLib
+namespace PixelWizards.Toolbars
 {
     public class EditorToolbarMainView : EditorWindow
     {
@@ -141,19 +141,19 @@ namespace MWU.FilmLib
                     GUILayout.EndHorizontal();
                         GUILayout.EndVertical();
                     }
-                    if( config.showLayoutModes)
-                    {
-                        GUILayout.BeginVertical();
-                            GUILayout.Label("Window Layout", EditorStyles.centeredGreyMiniLabel);
-                            GUILayout.BeginHorizontal();
-                                GUI.backgroundColor = colLayout;
-                                if (GUILayout.Button("Load Film Layout", GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
-                                {
-                                    MWU.Layout.LayoutLoader.LoadFilmLayout();
-                                }
-                            GUILayout.EndHorizontal();
-                        GUILayout.EndVertical();
-                        }
+                    //if( config.showLayoutModes)
+                    //{
+                    //    GUILayout.BeginVertical();
+                    //        GUILayout.Label("Window Layout", EditorStyles.centeredGreyMiniLabel);
+                    //        GUILayout.BeginHorizontal();
+                    //            GUI.backgroundColor = colLayout;
+                    //            if (GUILayout.Button("Load Film Layout", GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                    //            {
+                    //                MWU.Layout.LayoutLoader.LoadFilmLayout();
+                    //            }
+                    //        GUILayout.EndHorizontal();
+                    //    GUILayout.EndVertical();
+                    //    }
                 GUILayout.EndHorizontal();
             }
             // EditorGUILayout.EndScrollView();

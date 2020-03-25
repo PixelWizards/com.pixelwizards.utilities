@@ -5,7 +5,7 @@ using UnityEngine;
 //using UnityEngine.Experimental.Rendering.HDPipeline;
 using UnityEngine.SceneManagement;
 
-namespace MWU.FilmLib
+namespace PixelWizards.Toolbars
 {
 
     public class EditorToolbarController : MonoBehaviour

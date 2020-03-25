@@ -1,5 +1,5 @@
 ﻿
-namespace MWU.FilmLib
+namespace PixelWizards.Toolbars
 {
 
     /// <summary>

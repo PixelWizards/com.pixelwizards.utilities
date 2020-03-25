@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace MWU.FilmLib
+namespace PixelWizards.Toolbars
 {
     public class EditorToolbarTimelineView : EditorWindow
     {
@@ -16,12 +16,18 @@ namespace MWU.FilmLib
 
         private static ToolbarConfig config;
 
+        private static bool initialized = false;
+
         private void OnEnable()
         {
             config = AssetDatabase.LoadAssetAtPath("Assets/Settings/Toolbar/ToolbarConfig.asset", typeof(ToolbarConfig)) as ToolbarConfig;
             if (config == null)
             {
                 Debug.Log("Could not load toolbar config?");
+            }
+            else
+            {
+                initialized = true;
             }
         }
 
@@ -33,10 +39,13 @@ namespace MWU.FilmLib
             window.Show();
             window.maxSize = new Vector2(maxWindowSize.x, maxWindowSize.y);
             window.minSize = new Vector2(minWindowSize.x, minWindowSize.y);
+            initialized = true;
         }
 
         void OnGUI()
         {
+            if (!initialized)
+                return;
             curWindowSize.x = position.width;
             curWindowSize.y = position.height;
 

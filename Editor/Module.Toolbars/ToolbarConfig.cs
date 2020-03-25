@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace MWU.FilmLib
+namespace PixelWizards.Toolbars
 {
     public enum SceneLoaderType
     {
