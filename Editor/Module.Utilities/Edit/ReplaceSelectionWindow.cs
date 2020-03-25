@@ -91,10 +91,12 @@ namespace PixelWizards.Utilities
                     {
                         var child = t.GetChild(j);
                         var newChildren = g.GetComponentsInChildren<Transform>().ToList();
-                        if (newChildren.Contains(child))
+                        // see if we can find the child
+                        var newChild = newChildren.First(n => n.name == child.name);
+
+                        if (newChild)
                         {
                             // found match in the new prefab
-                            var newChild = newChildren.FirstOrDefault(n => n.name == child.name);
                             newChild.position = child.position;
                             newChild.rotation = child.rotation;
                             newChild.localScale = child.localScale;
