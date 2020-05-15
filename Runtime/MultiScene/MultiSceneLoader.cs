@@ -107,6 +107,72 @@ namespace PixelWizards.MultiScene
 		}
 
         /// <summary>
+        /// Loads a scene config by name
+        /// </summary>
+        /// <param name="configName"></param>
+        /// <param name="unloadExisting"></param>
+        public void LoadSceneConfigByName(string configName, bool unloadExisting)
+        {
+            foreach (var entry in config)
+            {
+                if( entry.name == configName)
+                {
+                    LoadSceneConfig(entry, unloadExisting);
+                    return;
+                }
+            }
+            Debug.LogWarning("MultiSceneLoader::LoadSceneConfigByName() - could not find config: " + configName);
+        }
+
+        /// <summary>
+        /// Unloads any scenes within the specified config
+        /// </summary>
+        /// <param name="thisConfig"></param>
+        public void UnloadConfig( string thisConfig)
+        {
+            foreach( var entry in config)
+            {
+                if( entry.name == thisConfig)
+                {
+                    UnloadConfig(entry);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Unloads any scene from a specific config ( if they are loaded )
+        /// </summary>
+        /// <param name="thisConfig"></param>
+        public void UnloadConfig( SceneConfig thisConfig)
+        {
+            var loadedSceneCount = SceneManager.sceneCount;
+            for( var i = 0; i < loadedSceneCount; i++)
+            {
+                var loadedScene = SceneManager.GetSceneAt(i);
+                foreach( var scene in thisConfig.sceneList)
+                {
+                    if( loadedScene.name == scene.name)
+                    {
+                        if( Application.isPlaying)
+                        {
+                            if(!IsScene_CurrentlyLoaded(scene.name))
+                            {
+                                Debug.Log("Unload scene: " + scene.name);
+                                SceneManager.UnloadSceneAsync(i);
+                            }
+                        }
+#if UNITY_EDITOR
+                        else
+                        {
+                            EditorSceneManager.CloseScene(loadedScene, false);
+                        }
+#endif        
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Loads an individual scene, optionally done additively. This is a wrapper for SceneManager (runtime loading) and EditorSceneManager (edit-time loading) for scenes
         /// </summary>
         /// <param name="thisScene">the scene you would like to load</param>
@@ -126,7 +192,12 @@ namespace PixelWizards.MultiScene
 					if (SceneManager.GetSceneByName(thisScene.name) == null)
 						Debug.LogError("Scene: " + thisScene.name + " doesn't exist in build settings");
 					else
-						SceneManager.LoadScene(thisScene.name, LoadSceneMode.Additive);
+                    {
+                        if(!IsScene_CurrentlyLoaded(thisScene.name))
+                        {
+                            SceneManager.LoadScene(thisScene.name, LoadSceneMode.Additive);
+                        }
+                    }
 				}
 				else
 				{
@@ -139,19 +210,69 @@ namespace PixelWizards.MultiScene
 			{
 				if (Application.isPlaying)
 				{
-					if (SceneManager.GetSceneByName(thisScene.name) == null)
-						Debug.LogError("Scene: " + thisScene.name + " doesn't exist in build settings");
-					else
-						SceneManager.LoadScene(thisScene.name, LoadSceneMode.Single);
+                    if (SceneManager.GetSceneByName(thisScene.name) == null)
+                        Debug.LogError("Scene: " + thisScene.name + " doesn't exist in build settings");
+                    else
+                    if (!IsScene_CurrentlyLoaded(thisScene.name))
+                    {
+                        SceneManager.LoadScene(thisScene.name, LoadSceneMode.Single);
+                    }
 				}
 				else
 				{
 
 #if UNITY_EDITOR
-					EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(thisScene), OpenSceneMode.Single);
+                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(thisScene), OpenSceneMode.Single);
 #endif
 				}
 			}
 		}
-	}
+
+        /// <summary>
+        /// Check if a scene is loaded at edit time
+        /// </summary>
+        /// <param name="thisScene"></param>
+        /// <returns></returns>
+#if UNITY_EDITOR
+        private bool IsScene_CurrentlyLoaded_inEditor(string thisScene)
+        {
+            for (int i = 0; i < UnityEditor.SceneManagement.EditorSceneManager.sceneCount; ++i)
+            {
+                var scene = UnityEditor.SceneManagement.EditorSceneManager.GetSceneAt(i);
+
+                if (scene.name == thisScene)
+                {
+                    Debug.Log("Editor: Scene already loaded");
+                    return true; //the scene is already loaded
+                }
+            }
+
+            Debug.Log("Editor: Scene not loaded");
+            //scene not currently loaded in the hierarchy:
+            return false;
+        }
+#endif
+
+        /// <summary>
+        /// Check if a scene is loaded at runtime
+        /// </summary>
+        /// <param name="thisScene"></param>
+        /// <returns></returns>
+        private bool IsScene_CurrentlyLoaded(string thisScene)
+        {
+            for (int i = 0; i < SceneManager.sceneCount; ++i)
+            {
+                Scene scene = SceneManager.GetSceneAt(i);
+                if (scene.name == thisScene)
+                {
+                    //the scene is already loaded
+                    return true;
+                }
+            }
+
+            Debug.Log("Scene not loaded: " + thisScene);
+
+            return false;   //scene not currently loaded in the hierarchy
+        }
+    }
 }

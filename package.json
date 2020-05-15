@@ -9,5 +9,8 @@
     "email": "support@pixelwizards.ca",
     "url": "https://github.com/PixelWizards"
   },
-  "keywords": []
+  "keywords": [],
+  "dependencies": {
+    "com.unity.timeline": "1.2.13"
+  }
 }
