@@ -8,9 +8,15 @@ namespace PixelWizards.MultiScene.Timeline
 {
 	public class MultiSceneSwapAsset : PlayableAsset, ITimelineClipAsset
 	{
-        public List<string> loadConfigs = new List<string>();
-        public List<string> unloadConfigs = new List<string>();
+        [Header("Should we unload existing scenes?")]
         public bool unloadExisting;
+
+        [Header("Which scene configs do we want to load?")]
+        public List<string> loadConfigs = new List<string>();
+
+        [Header("Which scene configs do we want to unload?")]
+        public List<string> unloadConfigs = new List<string>();
+        
 
 		public ClipCaps clipCaps
 		{

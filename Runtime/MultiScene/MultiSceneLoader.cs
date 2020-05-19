@@ -47,6 +47,7 @@ namespace PixelWizards.MultiScene
 		/// </summary>
         public void LoadAllScenes()
 		{
+            Debug.Log("MultiSceneLoader::LoadAllScenes()");
 			if (config.Count == 0)
 			{
 				Debug.LogError("No scene configs have been defined - nothing to load!");
@@ -90,7 +91,6 @@ namespace PixelWizards.MultiScene
         /// <param name="unloadExisting"></param>
         public void LoadSceneConfig( SceneConfig config, bool unloadExisting)
 		{
-			
 			for( int i = 0; i < config.sceneList.Count; i++)
 			{
 				if (i == 0)
@@ -155,10 +155,13 @@ namespace PixelWizards.MultiScene
                     {
                         if( Application.isPlaying)
                         {
-                            if(!IsScene_CurrentlyLoaded(scene.name))
+                            if (IsScene_CurrentlyLoaded(loadedScene.name))
                             {
-                                Debug.Log("Unload scene: " + scene.name);
-                                SceneManager.UnloadSceneAsync(i);
+                                if (loadedScene.isLoaded)
+                                {
+                                    Debug.Log("Unload scene: " + loadedScene.name);
+                                    SceneManager.UnloadSceneAsync(loadedScene);
+                                }
                             }
                         }
 #if UNITY_EDITOR

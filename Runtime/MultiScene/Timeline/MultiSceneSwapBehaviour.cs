@@ -8,9 +8,11 @@ namespace PixelWizards.MultiScene.Timeline
 {
 	public class MultiSceneSwapBehaviour : PlayableBehaviour
 	{
-        public List<string> loadConfigs = new List<string>();
-        public List<string> unloadConfigs = new List<string>();
         public bool unloadExisting;
+
+        public List<string> loadConfigs = new List<string>();
+
+        public List<string> unloadConfigs = new List<string>();
 
         public override void ProcessFrame(Playable playable, FrameData info, object playerData)
 		{
