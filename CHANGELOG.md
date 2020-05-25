@@ -4,6 +4,11 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.2.0-preview.2]
+- added multi-scene swap timeline track
+- properly wrap editor stuff in defines so it works at runtime
+- new 'Multi-Scene Swap Helper' - add one to a scene to bind Timeline to
+
 ## [0.2.0-preview.1]
 - did a pass to rework the shortcuts to use the new shortcut manager, moved the various tools to more appropriate locations (not just stuck under a 'tools' menu)
 - refactored gameobject replacement from a scriptable wizard to a dedicated window that can be persistent and docked

@@ -41,6 +41,7 @@ Content
 
 ### Tools
 
+* Timeline/Multi-Scene Swap track - added a new Timeline track to drive multi-scene config loading. Also see Multi-Scene Swap Helper
 * Assets/Create/Scene Management/Multi-Scene Loader - multi scene loading system (see Samples for Runtime API usage as well!)
 * Assets/Texture Combiner - lets you pack texture channels (combine multiple maps for HDRP textures etc)
 * Assets/Find all References - find all references of a given object
