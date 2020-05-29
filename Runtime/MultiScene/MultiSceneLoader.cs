@@ -167,7 +167,7 @@ namespace PixelWizards.MultiScene
 #if UNITY_EDITOR
                         else
                         {
-                            EditorSceneManager.CloseScene(loadedScene, false);
+                            EditorSceneManager.CloseScene(loadedScene, true);
                         }
 #endif        
                     }
@@ -199,6 +199,8 @@ namespace PixelWizards.MultiScene
                         if(!IsScene_CurrentlyLoaded(thisScene.name))
                         {
                             SceneManager.LoadScene(thisScene.name, LoadSceneMode.Additive);
+                            // kick the light probes
+                            LightProbes.TetrahedralizeAsync();
                         }
                     }
 				}
@@ -206,8 +208,10 @@ namespace PixelWizards.MultiScene
 				{
 #if UNITY_EDITOR
 					EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(thisScene), OpenSceneMode.Additive);
+                    // kick the light probes
+                    LightProbes.TetrahedralizeAsync();
 #endif
-				}
+                }
 			}
 			else
 			{
@@ -219,6 +223,8 @@ namespace PixelWizards.MultiScene
                     if (!IsScene_CurrentlyLoaded(thisScene.name))
                     {
                         SceneManager.LoadScene(thisScene.name, LoadSceneMode.Single);
+                        // kick the light probes
+                        LightProbes.TetrahedralizeAsync();
                     }
 				}
 				else
@@ -226,8 +232,10 @@ namespace PixelWizards.MultiScene
 
 #if UNITY_EDITOR
                     EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(thisScene), OpenSceneMode.Single);
+                    // kick the light probes
+                    LightProbes.TetrahedralizeAsync();
 #endif
-				}
+                }
 			}
 		}
 
@@ -245,12 +253,10 @@ namespace PixelWizards.MultiScene
 
                 if (scene.name == thisScene)
                 {
-                  //  Debug.Log("Editor: Scene already loaded");
                     return true; //the scene is already loaded
                 }
             }
 
-            //Debug.Log("Editor: Scene not loaded");
             //scene not currently loaded in the hierarchy:
             return false;
         }
@@ -272,8 +278,6 @@ namespace PixelWizards.MultiScene
                     return true;
                 }
             }
-
-           // Debug.Log("Scene not loaded: " + thisScene);
 
             return false;   //scene not currently loaded in the hierarchy
         }
