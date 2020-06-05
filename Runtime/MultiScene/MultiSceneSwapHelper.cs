@@ -28,9 +28,20 @@ namespace PixelWizards.MultiScene
         private SceneModel model = new SceneModel();
         public MultiSceneLoader multiSceneConfig;
 
+        /// <summary>
+        /// Load a given config from our MultiSceneConfig by name, optionally unloading all existing scenes and optionally using Async loading 
+        /// </summary>
+        /// <param name="configName"></param>
+        /// <param name="unloadExisting"></param>
+        /// <param name="useAsyncLoading"></param>
+        public void LoadConfig( string configName, bool unloadExisting, bool useAsyncLoading)
+        {
+            LoadSceneConfigByName(configName, unloadExisting, useAsyncLoading);
+        }
+
         public void LoadConfig( string configName, bool unloadExisting)
         {
-            LoadSceneConfigByName(configName, unloadExisting);
+            LoadSceneConfigByName(configName, unloadExisting, false);
         }
 
         public void UnloadConfig( string configName)
@@ -43,13 +54,13 @@ namespace PixelWizards.MultiScene
         /// </summary>
         /// <param name="configName"></param>
         /// <param name="unloadExisting"></param>
-        private void LoadSceneConfigByName(string configName, bool unloadExisting)
+        private void LoadSceneConfigByName(string configName, bool unloadExisting, bool useAsyncLoading)
         {
             foreach (var entry in multiSceneConfig.config)
             {
                 if (entry.name == configName)
                 {
-                    LoadSceneConfig(entry, unloadExisting);
+                    LoadSceneConfig(entry, unloadExisting, useAsyncLoading);
                     return;
                 }
             }
@@ -63,7 +74,7 @@ namespace PixelWizards.MultiScene
         /// </summary>
         /// <param name="config"></param>
         /// <param name="unloadExisting"></param>
-        private void LoadSceneConfig(SceneConfig config, bool unloadExisting)
+        private void LoadSceneConfig(SceneConfig config, bool unloadExisting, bool useAsyncLoading)
         {
             for (int i = 0; i < config.sceneList.Count; i++)
             {
@@ -78,10 +89,10 @@ namespace PixelWizards.MultiScene
                     {
                         if (i == 0)
                         {
-                            if (unloadExisting)
+                            if (unloadExisting )
                             {
                                 // if we need to unload existing, then load the first in single mode, otherwise everything is additive
-                                LoadNewScene(sceneName, callback =>
+                                LoadNewScene(sceneName, useAsyncLoading, callback =>
                                 {
                                     if (IsScene_CurrentlyLoaded(sceneName))
                                     {
@@ -95,7 +106,7 @@ namespace PixelWizards.MultiScene
                             else
                             {
                                 // and the rest additive
-                                LoadSceneAdditive(sceneName, callback =>
+                                LoadSceneAdditive(sceneName, useAsyncLoading, callback =>
                                 {
                                     if (IsScene_CurrentlyLoaded(sceneName))
                                     {
@@ -111,7 +122,7 @@ namespace PixelWizards.MultiScene
                         else
                         {
                             // and the rest additive
-                            LoadSceneAdditive(sceneName, callback =>
+                            LoadSceneAdditive(sceneName, useAsyncLoading, callback =>
                             {
                                 if (IsScene_CurrentlyLoaded(sceneName))
                                 {
@@ -196,21 +207,21 @@ namespace PixelWizards.MultiScene
             }
         }
 
-        private void LoadNewScene(string newEnvironment, Action<string> callback = null)
+        private void LoadNewScene(string newEnvironment, bool useAsyncLoading, Action<string> callback = null)
         {
             model.levelLoading = newEnvironment;
 
-            StartCoroutine(LoadSceneInternal(model.levelLoading, false, callback));
+            StartCoroutine(LoadSceneInternal(model.levelLoading, false, useAsyncLoading, callback));
         }
 
         /// <summary>
         /// Load a new Level additively. Fires a callback with the name of the newly loaded level once the load is completed.
         /// </summary>
-        private void LoadSceneAdditive(string newEnvironment, Action<string> callback = null)
+        private void LoadSceneAdditive(string newEnvironment, bool useAsyncLoading, Action<string> callback = null)
         {
             model.levelLoading = newEnvironment;
 
-            StartCoroutine(LoadSceneInternal(model.levelLoading, true, callback));
+            StartCoroutine(LoadSceneInternal(model.levelLoading, true, useAsyncLoading, callback));
         }
 
         /// <summary>
@@ -231,21 +242,24 @@ namespace PixelWizards.MultiScene
         /// <summary>
         /// Async level loading using the new Unity 5 Scene Management API
         /// </summary>
-        private IEnumerator LoadSceneInternal(string newScene, bool useAdditive, Action<string> callback = null)
+        private IEnumerator LoadSceneInternal(string newScene, bool useAdditive, bool useAsyncLoading, Action<string> callback = null)
         {
-            AsyncOperation async;
+            AsyncOperation async = new AsyncOperation();
             try
             {
+                var sceneMode = LoadSceneMode.Single;
                 if (useAdditive)
+                    sceneMode = LoadSceneMode.Additive;
+
+                if( useAsyncLoading)
                 {
-                    async = SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Additive);
+                    async = SceneManager.LoadSceneAsync(newScene, sceneMode);
+                    async.allowSceneActivation = true;          // scenes will activate themselves
                 }
                 else
                 {
-                    async = SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Single);
+                    SceneManager.LoadScene(newScene, sceneMode);
                 }
-
-                async.allowSceneActivation = true;          // scenes will activate themselves
             }
             catch (Exception e)
             {
@@ -266,10 +280,8 @@ namespace PixelWizards.MultiScene
                     model.isLevelLoading = false;
                     // TODO: should add a timer so we can log how long level loads take
 
-                    if (callback != null)
-                    {
-                        callback(newScene);
-                    }
+                    callback?.Invoke(newScene);
+
                     model.levelLoading = string.Empty;
                 }
             }
@@ -277,6 +289,7 @@ namespace PixelWizards.MultiScene
             {
                 Debug.LogError("Async loading of scene failed for scene: " + newScene + " - might not be in your build settings?");
             }
+
 
             yield break;
         }

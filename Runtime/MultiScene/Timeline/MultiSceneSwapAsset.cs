@@ -11,7 +11,11 @@ namespace PixelWizards.MultiScene.Timeline
         [Header("Should we unload existing scenes?")]
         public bool unloadExisting;
 
-        [Header("Which scene configs do we want to load?")]
+		[Header("Should we use Async loading or not?")]
+		public bool useAsyncLoading = false;
+
+
+		[Header("Which scene configs do we want to load?")]
         public List<string> loadConfigs = new List<string>();
 
         [Header("Which scene configs do we want to unload?")]
@@ -28,7 +32,8 @@ namespace PixelWizards.MultiScene.Timeline
 			var playable = ScriptPlayable<MultiSceneSwapBehaviour>.Create(graph);
 			
 			var sceneSwapBehaviour = playable.GetBehaviour();
-            
+
+			sceneSwapBehaviour.useAsyncLoading = useAsyncLoading;
             sceneSwapBehaviour.loadConfigs = loadConfigs;
             sceneSwapBehaviour.unloadConfigs = unloadConfigs;
             sceneSwapBehaviour.unloadExisting = unloadExisting;

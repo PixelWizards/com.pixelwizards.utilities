@@ -10,6 +10,8 @@ namespace PixelWizards.MultiScene.Timeline
 	{
         public bool unloadExisting;
 
+        public bool useAsyncLoading = false;
+
         public List<string> loadConfigs = new List<string>();
 
         public List<string> unloadConfigs = new List<string>();
@@ -27,7 +29,7 @@ namespace PixelWizards.MultiScene.Timeline
 
                 foreach (var config in loadConfigs)
                 {
-                    sceneSwap.LoadConfig(config, unloadExisting);
+                    sceneSwap.LoadConfig(config, unloadExisting, useAsyncLoading);
                 }
 
             }
