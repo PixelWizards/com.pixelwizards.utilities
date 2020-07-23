@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ namespace PixelWizards.Utilities
 {
 	public class EditorNote : MonoBehaviour
 	{
+
 		[TextArea]
 		public string m_Text;
 		public Vector3 m_Offset;
@@ -19,7 +21,9 @@ namespace PixelWizards.Utilities
 				Destroy(this);
 		}
 
+
 		[MenuItem("GameObject/Scene Note")]
+
 		static void AddEditorNote()
 		{
 			var gameObject = new GameObject("Scene Note");
@@ -75,5 +79,7 @@ namespace PixelWizards.Utilities
 			GUI.Box(rect, m_Text, m_TextStyle);
 			Handles.EndGUI();
 		}
+
 	}
 }
+#endif
