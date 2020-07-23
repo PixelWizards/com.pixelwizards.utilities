@@ -17,6 +17,7 @@ namespace PixelWizards.MultiScene
     /// Note: implements the scene loading separately from the MultiSceneConfig 
     /// so we can do callbacks on scene load (coroutines etc) that we can't do in a scriptable objects
     /// </summary>
+    [ExecuteAlways]
     public class MultiSceneSwapHelper : MonoBehaviour
     {
         public class SceneModel
@@ -25,8 +26,35 @@ namespace PixelWizards.MultiScene
             public string levelLoading = String.Empty;
         }
 
-        private SceneModel model = new SceneModel();
+        [Header("the scene config that this swap helper uses")]
         public MultiSceneLoader multiSceneConfig;
+
+        [Header("Load configs on Awake()?")]
+        public bool loadConfigOnAwake = false;
+        [Header("List of configs that we wantt to load on Awake()")]
+        public List<string> configList = new List<string>();
+
+        // our internal data model
+        private SceneModel model = new SceneModel();
+
+        // cache of configs that are currently loaded
+        private List<string> configCache = new List<string>();
+
+        /// <summary>
+        /// Added support for runtime 'on demand' loading - load one master scene that triggers a set of sub-scenes to be loaded if they aren't already
+        /// </summary>
+        public void Awake()
+        {
+            configCache.Clear();
+
+            if( loadConfigOnAwake)
+            {
+                foreach( var config in configList)
+                {
+                    LoadSceneConfigByName(config, false, true);
+                }
+            }
+        }
 
         /// <summary>
         /// Load a given config from our MultiSceneConfig by name, optionally unloading all existing scenes and optionally using Async loading 
@@ -68,7 +96,6 @@ namespace PixelWizards.MultiScene
             Debug.LogWarning("MultiSceneLoader::LoadSceneConfigByName() - could not find config: " + configName);
         }
 
-
         /// <summary>
         /// Load a specific scene config, optionally unloads existing first (ie can be optionally additively loaded)
         /// </summary>
@@ -76,6 +103,18 @@ namespace PixelWizards.MultiScene
         /// <param name="unloadExisting"></param>
         private void LoadSceneConfig(SceneConfig config, bool unloadExisting, bool useAsyncLoading)
         {
+            // is this config already in our cache? ie are the scenes loaded already?
+            if (configCache.Contains(config.name))
+            {
+               // Debug.Log("LoadSceneConfig() - " + config.name + " is already in our cache, ignoring call");
+                return;
+            }
+            else
+            {
+                configCache.Add(config.name);
+            }
+                
+
             for (int i = 0; i < config.sceneList.Count; i++)
             {
                 var sceneName = config.sceneList[i].name;
@@ -96,10 +135,8 @@ namespace PixelWizards.MultiScene
                                 {
                                     if (IsScene_CurrentlyLoaded(sceneName))
                                     {
-                      //                  Debug.Log("Update light probes");
-
                                         // if so, then do light magic
-                                        LightProbes.TetrahedralizeAsync();
+                                        LightProbes.Tetrahedralize();
                                     }
                                 });
                             }
@@ -110,8 +147,6 @@ namespace PixelWizards.MultiScene
                                 {
                                     if (IsScene_CurrentlyLoaded(sceneName))
                                     {
-                             //           Debug.Log("Update light probes");
-
                                         // if so, then do light magic
                                         LightProbes.TetrahedralizeAsync();
                                     }
@@ -126,8 +161,6 @@ namespace PixelWizards.MultiScene
                             {
                                 if (IsScene_CurrentlyLoaded(sceneName))
                                 {
-                         //           Debug.Log("Update light probes");
-
                                     // if so, then do light magic
                                     LightProbes.TetrahedralizeAsync();
                                 }
@@ -147,7 +180,6 @@ namespace PixelWizards.MultiScene
                         // now is it loaded?
                         if (IsScene_CurrentlyLoaded_inEditor(sceneName))
                         {
-                        //    Debug.Log("Update light probes");
                             // if so, then do light magic
                             LightProbes.Tetrahedralize();
                         }
@@ -163,6 +195,16 @@ namespace PixelWizards.MultiScene
         /// <param name="thisConfig"></param>
         private void UnloadConfigInternal(string thisConfig)
         {
+            if( configCache.Contains(thisConfig))
+            {
+                configCache.Remove(thisConfig);
+            }
+            else
+            {
+               // Debug.Log("unloadConfig: " + thisConfig + " is not loaded, ignoring");
+                return;
+            }
+
             foreach (var entry in multiSceneConfig.config)
             {
                 if (entry.name == thisConfig)
@@ -178,32 +220,39 @@ namespace PixelWizards.MultiScene
         /// <param name="thisConfig"></param>
         private void UnloadConfigInternal(SceneConfig thisConfig)
         {
-            var loadedSceneCount = SceneManager.sceneCount;
-            for (var i = 0; i < loadedSceneCount; i++)
+            try
             {
-                var loadedScene = SceneManager.GetSceneAt(i);
-                foreach (var scene in thisConfig.sceneList)
+                var loadedSceneCount = SceneManager.sceneCount;
+                for (var i = 0; i < loadedSceneCount; i++)
                 {
-                    if (loadedScene.name == scene.name)
+                    var loadedScene = SceneManager.GetSceneAt(i);
+                    foreach (var scene in thisConfig.sceneList)
                     {
-                        if (Application.isPlaying)
+                        if (loadedScene.name == scene.name)
                         {
-                            if (IsScene_CurrentlyLoaded(loadedScene.name))
+                            if (Application.isPlaying)
                             {
-                                if (loadedScene.isLoaded)
+                                if (IsScene_CurrentlyLoaded(loadedScene.name))
                                 {
-                                    SceneManager.UnloadSceneAsync(loadedScene);
+                                    if (loadedScene.isLoaded)
+                                    {
+                                        SceneManager.UnloadSceneAsync(loadedScene);
+                                    }
                                 }
                             }
-                        }
 #if UNITY_EDITOR
-                        else
-                        {
-                            EditorSceneManager.CloseScene(loadedScene, true);
+                            else
+                            {
+                                EditorSceneManager.CloseScene(loadedScene, true);
+                            }
+#endif
                         }
-#endif        
                     }
                 }
+            }
+            catch (Exception e)
+            {
+               // Debug.Log("Caught Exception " + e.Message + " while unloading config " + thisConfig.name + " scenes might be unloaded already?");
             }
         }
 
@@ -265,31 +314,37 @@ namespace PixelWizards.MultiScene
             {
                 Debug.LogError("Caught Exception " + e.Message + " while loading scene: " + newScene + " - might not be in your build settings?");
                 async = null;
+                yield break;
             }
 
-            if (async != null)
+            if( useAsyncLoading)
             {
-                while (!async.isDone)
+                if (async != null)
                 {
-                    model.isLevelLoading = true;
-                    yield return null;
+                    while (!async.isDone)
+                    {
+                        model.isLevelLoading = true;
+                        yield return null;
+                    }
+
+                    if (async.isDone)
+                    {
+                        model.isLevelLoading = false;
+                        // TODO: should add a timer so we can log how long level loads take
+
+                        callback?.Invoke(newScene);
+
+                        model.levelLoading = string.Empty;
+                        async = null;
+                        yield break;
+                    }
                 }
-
-                if (async.isDone)
+                else
                 {
-                    model.isLevelLoading = false;
-                    // TODO: should add a timer so we can log how long level loads take
-
-                    callback?.Invoke(newScene);
-
-                    model.levelLoading = string.Empty;
+                    async = null;
+                    Debug.LogError("Async loading of scene failed for scene: " + newScene + " - might not be in your build settings?");
                 }
             }
-            else
-            {
-                Debug.LogError("Async loading of scene failed for scene: " + newScene + " - might not be in your build settings?");
-            }
-
 
             yield break;
         }
@@ -303,10 +358,9 @@ namespace PixelWizards.MultiScene
 #if UNITY_EDITOR
         private bool IsScene_CurrentlyLoaded_inEditor(string thisScene)
         {
-            for (int i = 0; i < UnityEditor.SceneManagement.EditorSceneManager.sceneCount; ++i)
+            for (int i = 0; i < EditorSceneManager.sceneCount; ++i)
             {
-                var scene = UnityEditor.SceneManagement.EditorSceneManager.GetSceneAt(i);
-
+                var scene = EditorSceneManager.GetSceneAt(i);
                 if (scene.name == thisScene)
                 {
                    // Debug.Log("Editor: Scene already loaded");
@@ -327,16 +381,27 @@ namespace PixelWizards.MultiScene
         /// <returns></returns>
         private bool IsScene_CurrentlyLoaded(string thisScene)
         {
+#if UNITY_EDITOR
+            return IsScene_CurrentlyLoaded_inEditor(thisScene);
+#else
             for (int i = 0; i < SceneManager.sceneCount; ++i)
             {
-                Scene scene = SceneManager.GetSceneAt(i);
+                var scene = SceneManager.GetSceneAt(i);
                 if (scene.name == thisScene)
                 {
-                    //the scene is already loaded
-                    return true;
+                    if( scene.isLoaded)
+                    {
+                        //the scene is already loaded
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
             return false;   //scene not currently loaded in the hierarchy
+#endif
         }
 
     }
