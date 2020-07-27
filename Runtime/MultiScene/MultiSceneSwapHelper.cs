@@ -43,7 +43,7 @@ namespace PixelWizards.MultiScene
         /// <summary>
         /// Added support for runtime 'on demand' loading - load one master scene that triggers a set of sub-scenes to be loaded if they aren't already
         /// </summary>
-        public void Awake()
+        public void OnEnable()
         {
             configCache.Clear();
 
@@ -111,6 +111,7 @@ namespace PixelWizards.MultiScene
             }
             else
             {
+                Debug.Log("Starting scene load for config: " + config.name);
                 configCache.Add(config.name);
             }
                 
@@ -118,7 +119,7 @@ namespace PixelWizards.MultiScene
             for (int i = 0; i < config.sceneList.Count; i++)
             {
                 var sceneName = config.sceneList[i].name;
-
+                Debug.Log("Loading scene from config : " + sceneName);
                 if (Application.isPlaying)
                 {
                     if (SceneManager.GetSceneByName(sceneName) == null)
@@ -174,6 +175,7 @@ namespace PixelWizards.MultiScene
                     // if it's not already loaded
                     if (!IsScene_CurrentlyLoaded_inEditor(sceneName))
                     {
+                        Debug.Log("Editor: loading scene: " + sceneName);
                         // load the scene
                         EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(config.sceneList[i]), OpenSceneMode.Additive);
 
@@ -187,6 +189,8 @@ namespace PixelWizards.MultiScene
 #endif
                 }
             }
+
+            Debug.Log("Scene load for config: " + config.name + " COMPLETE");
         }
 
         /// <summary>
@@ -197,6 +201,7 @@ namespace PixelWizards.MultiScene
         {
             if( configCache.Contains(thisConfig))
             {
+                Debug.Log("UnloadConfig : " + thisConfig + " starting...");
                 configCache.Remove(thisConfig);
             }
             else
@@ -212,6 +217,8 @@ namespace PixelWizards.MultiScene
                     UnloadConfigInternal(entry);
                 }
             }
+
+            Debug.Log("UnloadConfig : " + thisConfig + " complete...");
         }
 
         /// <summary>
@@ -222,37 +229,34 @@ namespace PixelWizards.MultiScene
         {
             try
             {
-                var loadedSceneCount = SceneManager.sceneCount;
-                for (var i = 0; i < loadedSceneCount; i++)
+                foreach( var thisScene in thisConfig.sceneList)
                 {
-                    var loadedScene = SceneManager.GetSceneAt(i);
-                    foreach (var scene in thisConfig.sceneList)
+                    var scene = SceneManager.GetSceneByName(thisScene.name);
+                    if (scene != null)
                     {
-                        if (loadedScene.name == scene.name)
+                        if( Application.isPlaying)
                         {
-                            if (Application.isPlaying)
+                            if( scene.isLoaded)
                             {
-                                if (IsScene_CurrentlyLoaded(loadedScene.name))
-                                {
-                                    if (loadedScene.isLoaded)
-                                    {
-                                        SceneManager.UnloadSceneAsync(loadedScene);
-                                    }
-                                }
+                                Debug.Log("Unload scene async: " + scene.name);
+
+                                SceneManager.UnloadSceneAsync(scene);
                             }
-#if UNITY_EDITOR
-                            else
-                            {
-                                EditorSceneManager.CloseScene(loadedScene, true);
-                            }
-#endif
                         }
+#if UNITY_EDITOR
+                        else
+                        {
+                            Debug.Log("Editor: close scene : " + scene.name);
+
+                            EditorSceneManager.CloseScene(scene, true);
+                        }
+#endif
                     }
                 }
             }
-            catch (Exception e)
+            finally
             {
-               // Debug.Log("Caught Exception " + e.Message + " while unloading config " + thisConfig.name + " scenes might be unloaded already?");
+
             }
         }
 
@@ -279,12 +283,14 @@ namespace PixelWizards.MultiScene
         /// <param name="thisScene"></param>
         private void SetActiveScene(string thisScene)
         {
+            Debug.Log("Set active scene : " + thisScene);
             var activeScene = SceneManager.GetSceneByName(thisScene);
             SceneManager.SetActiveScene(activeScene);
         }
 
         private void UnloadScene(string sceneName)
         {
+            Debug.Log("Unload scene async : " + sceneName);
             SceneManager.UnloadSceneAsync(sceneName);
         }
 
@@ -293,6 +299,7 @@ namespace PixelWizards.MultiScene
         /// </summary>
         private IEnumerator LoadSceneInternal(string newScene, bool useAdditive, bool useAsyncLoading, Action<string> callback = null)
         {
+            Debug.Log("LoadSceneInternal: " + newScene);
             AsyncOperation async = new AsyncOperation();
             try
             {
@@ -302,12 +309,14 @@ namespace PixelWizards.MultiScene
 
                 if( useAsyncLoading)
                 {
+                    Debug.Log("Start async scene load: " + newScene);
                     async = SceneManager.LoadSceneAsync(newScene, sceneMode);
                     async.allowSceneActivation = true;          // scenes will activate themselves
                 }
                 else
                 {
                     SceneManager.LoadScene(newScene, sceneMode);
+                    Debug.Log("LoadSceneInternal: " + newScene + " COMPLETE");
                 }
             }
             catch (Exception e)
@@ -333,6 +342,8 @@ namespace PixelWizards.MultiScene
                         // TODO: should add a timer so we can log how long level loads take
 
                         callback?.Invoke(newScene);
+                        
+                        Debug.Log("LoadSceneInternal: async load " + newScene + " COMPLETE");
 
                         model.levelLoading = string.Empty;
                         async = null;

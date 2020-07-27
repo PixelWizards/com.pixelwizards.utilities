@@ -1,19 +1,21 @@
 #if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
+
 
 namespace PixelWizards.Utilities
 {
 	public class EditorNote : MonoBehaviour
 	{
-
+#if UNITY_EDITOR
 		[TextArea]
 		public string m_Text;
 		public Vector3 m_Offset;
 		static GUIStyle m_TextStyle;
 		GUIContent m_GUIContent;
 		Vector2 m_TextSize;
-
+#endif
 		private void Awake()
 		{
 			// if we aren't the editor, just remove this
@@ -21,7 +23,7 @@ namespace PixelWizards.Utilities
 				Destroy(this);
 		}
 
-
+#if UNITY_EDITOR
 		[MenuItem("GameObject/Scene Note")]
 
 		static void AddEditorNote()
@@ -41,7 +43,7 @@ namespace PixelWizards.Utilities
 		static Vector3 GetObjectOffset(GameObject gameObject)
 		{
 			var meshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
-            var collider = gameObject.GetComponentInChildren<Collider>();
+			var collider = gameObject.GetComponentInChildren<Collider>();
 			if (collider != null)
 			{
 				return Vector3.up * collider.bounds.size.y;
@@ -79,7 +81,7 @@ namespace PixelWizards.Utilities
 			GUI.Box(rect, m_Text, m_TextStyle);
 			Handles.EndGUI();
 		}
+#endif
 
 	}
 }
-#endif
