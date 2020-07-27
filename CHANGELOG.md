@@ -4,6 +4,10 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.2.0-preview.6]
+- properly wrapped editor note so it plays nice with builds
+- fixed an exception that was happening in the scene swap helper that resulted in 'hanging scenes' 
+
 ## [0.2.0-preview.5]
 - added internal cache to the multi scene swap helper so the timeline track doesn't hammer us with load / unload calls too much
 - wrapped editornote so it works in builds
