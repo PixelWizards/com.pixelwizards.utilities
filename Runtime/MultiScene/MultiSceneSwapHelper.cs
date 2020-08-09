@@ -118,7 +118,7 @@ namespace PixelWizards.MultiScene
 
             for (int i = 0; i < config.sceneList.Count; i++)
             {
-                var sceneName = config.sceneList[i].name;
+                var sceneName = config.sceneList[i].SceneName;
                 Debug.Log("Loading scene from config : " + sceneName);
                 if (Application.isPlaying)
                 {
@@ -177,7 +177,7 @@ namespace PixelWizards.MultiScene
                     {
                         Debug.Log("Editor: loading scene: " + sceneName);
                         // load the scene
-                        EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(config.sceneList[i]), OpenSceneMode.Additive);
+                        EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(config.sceneList[i].Scene), OpenSceneMode.Additive);
 
                         // now is it loaded?
                         if (IsScene_CurrentlyLoaded_inEditor(sceneName))
@@ -231,7 +231,7 @@ namespace PixelWizards.MultiScene
             {
                 foreach( var thisScene in thisConfig.sceneList)
                 {
-                    var scene = SceneManager.GetSceneByName(thisScene.name);
+                    var scene = SceneManager.GetSceneByName(thisScene.SceneName);
                     if (scene != null)
                     {
                         if( Application.isPlaying)

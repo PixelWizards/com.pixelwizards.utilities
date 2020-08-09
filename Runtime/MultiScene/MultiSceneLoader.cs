@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using PixelWizards.Utilities;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditorInternal;
 #endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,7 +29,7 @@ namespace PixelWizards.MultiScene
         /// </summary>
 		[SerializeField]
 		[Header("Scene List")]
-		public List<Object> sceneList = new List<Object>();
+		public List<SceneReference> sceneList = new List<SceneReference>();
 	}
 
 	/// <summary>
@@ -151,7 +153,7 @@ namespace PixelWizards.MultiScene
                 var loadedScene = SceneManager.GetSceneAt(i);
                 foreach( var scene in thisConfig.sceneList)
                 {
-                    if( loadedScene.name == scene.name)
+                    if( loadedScene.name == scene.SceneName)
                     {
                         if( Application.isPlaying)
                         {
@@ -180,7 +182,7 @@ namespace PixelWizards.MultiScene
         /// </summary>
         /// <param name="thisScene">the scene you would like to load</param>
         /// <param name="isAdditive">whether you want to use additve loading or not</param>
-		private void LoadScene( Object thisScene, bool isAdditive)
+		private void LoadScene( SceneReference thisScene, bool isAdditive)
 		{
 			if (thisScene == null)
 			{
@@ -192,13 +194,13 @@ namespace PixelWizards.MultiScene
 			{
 				if (Application.isPlaying)
 				{
-					if (SceneManager.GetSceneByName(thisScene.name) == null)
-						Debug.LogError("Scene: " + thisScene.name + " doesn't exist in build settings");
+					if (SceneManager.GetSceneByName(thisScene.SceneName) == null)
+						Debug.LogError("Scene: " + thisScene.SceneName + " doesn't exist in build settings");
 					else
                     {
-                        if(!IsScene_CurrentlyLoaded(thisScene.name))
+                        if(!IsScene_CurrentlyLoaded(thisScene.SceneName))
                         {
-                            SceneManager.LoadScene(thisScene.name, LoadSceneMode.Additive);
+                            SceneManager.LoadScene(thisScene.SceneName, LoadSceneMode.Additive);
                             // kick the light probes
                             LightProbes.TetrahedralizeAsync();
                         }
@@ -207,7 +209,7 @@ namespace PixelWizards.MultiScene
 				else
 				{
 #if UNITY_EDITOR
-					EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(thisScene), OpenSceneMode.Additive);
+					EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(thisScene.Scene), OpenSceneMode.Additive);
                     // kick the light probes
                     LightProbes.TetrahedralizeAsync();
 #endif
@@ -217,12 +219,12 @@ namespace PixelWizards.MultiScene
 			{
 				if (Application.isPlaying)
 				{
-                    if (SceneManager.GetSceneByName(thisScene.name) == null)
-                        Debug.LogError("Scene: " + thisScene.name + " doesn't exist in build settings");
+                    if (SceneManager.GetSceneByName(thisScene.SceneName) == null)
+                        Debug.LogError("Scene: " + thisScene.SceneName + " doesn't exist in build settings");
                     else
-                    if (!IsScene_CurrentlyLoaded(thisScene.name))
+                    if (!IsScene_CurrentlyLoaded(thisScene.SceneName))
                     {
-                        SceneManager.LoadScene(thisScene.name, LoadSceneMode.Single);
+                        SceneManager.LoadScene(thisScene.SceneName, LoadSceneMode.Single);
                         // kick the light probes
                         LightProbes.TetrahedralizeAsync();
                     }
@@ -231,7 +233,7 @@ namespace PixelWizards.MultiScene
 				{
 
 #if UNITY_EDITOR
-                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(thisScene), OpenSceneMode.Single);
+                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(thisScene.Scene), OpenSceneMode.Single);
                     // kick the light probes
                     LightProbes.TetrahedralizeAsync();
 #endif
