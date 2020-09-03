@@ -53,7 +53,7 @@ namespace PixelWizards.MultiScene
             if (loadConfigOnAwake)
             {
 #if UNITY_EDITOR
-                if (!autoLoadConfigInEditor)
+                if (!autoLoadConfigInEditor && !Application.isPlaying)
                     return;
 #endif
                 foreach( var config in configList)
