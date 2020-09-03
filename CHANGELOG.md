@@ -4,6 +4,11 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.3.0-preview.2]
+- cleanup / refactor of the multi-scene inspector, fixed a strange crash bug
+- added callback hooks for the multi-scene helper, fixed a few issues, 
+- multiscene helper flag to specify whether you want to load scenes automatically in the editor
+
 ## [0.3.0-preview.1]
 - major update - directory reorg, cleanup
 - integrated Ryan Hipple's 'Unity Editor Junkie' extensions - most importantly the SceneReference system to fix the MultiScene loader in builds
