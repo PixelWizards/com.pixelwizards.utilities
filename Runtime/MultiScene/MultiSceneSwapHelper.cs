@@ -43,7 +43,7 @@ namespace PixelWizards.MultiScene
         /// <summary>
         /// Added support for runtime 'on demand' loading - load one master scene that triggers a set of sub-scenes to be loaded if they aren't already
         /// </summary>
-        public void OnEnable()
+        public void Awake()
         {
             configCache.Clear();
 
@@ -62,14 +62,14 @@ namespace PixelWizards.MultiScene
         /// <param name="configName"></param>
         /// <param name="unloadExisting"></param>
         /// <param name="useAsyncLoading"></param>
-        public void LoadConfig( string configName, bool unloadExisting, bool useAsyncLoading)
+        public void LoadConfig( string configName, bool unloadExisting, bool useAsyncLoading, Action<string> callback = null)
         {
-            LoadSceneConfigByName(configName, unloadExisting, useAsyncLoading);
+            LoadSceneConfigByName(configName, unloadExisting, useAsyncLoading, callback);
         }
 
-        public void LoadConfig( string configName, bool unloadExisting)
+        public void LoadConfig( string configName, bool unloadExisting, Action<string> callback = null)
         {
-            LoadSceneConfigByName(configName, unloadExisting, false);
+            LoadSceneConfigByName(configName, unloadExisting, false, callback);
         }
 
         public void UnloadConfig( string configName)
@@ -82,13 +82,13 @@ namespace PixelWizards.MultiScene
         /// </summary>
         /// <param name="configName"></param>
         /// <param name="unloadExisting"></param>
-        private void LoadSceneConfigByName(string configName, bool unloadExisting, bool useAsyncLoading)
+        private void LoadSceneConfigByName(string configName, bool unloadExisting, bool useAsyncLoading, Action<string> callback = null)
         {
             foreach (var entry in multiSceneConfig.config)
             {
                 if (entry.name == configName)
                 {
-                    LoadSceneConfig(entry, unloadExisting, useAsyncLoading);
+                    LoadSceneConfig(entry, unloadExisting, useAsyncLoading, callback);
                     return;
                 }
             }
@@ -101,7 +101,7 @@ namespace PixelWizards.MultiScene
         /// </summary>
         /// <param name="config"></param>
         /// <param name="unloadExisting"></param>
-        private void LoadSceneConfig(SceneConfig config, bool unloadExisting, bool useAsyncLoading)
+        private void LoadSceneConfig(SceneConfig config, bool unloadExisting, bool useAsyncLoading, Action<string> callback = null)
         {
             // is this config already in our cache? ie are the scenes loaded already?
             if (configCache.Contains(config.name))
@@ -115,7 +115,6 @@ namespace PixelWizards.MultiScene
                 configCache.Add(config.name);
             }
                 
-
             for (int i = 0; i < config.sceneList.Count; i++)
             {
                 var sceneName = config.sceneList[i].SceneName;
@@ -132,8 +131,10 @@ namespace PixelWizards.MultiScene
                             if (unloadExisting )
                             {
                                 // if we need to unload existing, then load the first in single mode, otherwise everything is additive
-                                LoadNewScene(sceneName, useAsyncLoading, callback =>
+                                LoadNewScene(sceneName, useAsyncLoading, innercallback =>
                                 {
+                                    callback?.Invoke(sceneName);
+
                                     if (IsScene_CurrentlyLoaded(sceneName))
                                     {
                                         // if so, then do light magic
@@ -144,8 +145,10 @@ namespace PixelWizards.MultiScene
                             else
                             {
                                 // and the rest additive
-                                LoadSceneAdditive(sceneName, useAsyncLoading, callback =>
+                                LoadSceneAdditive(sceneName, useAsyncLoading, innercallback =>
                                 {
+                                    callback?.Invoke(sceneName);
+
                                     if (IsScene_CurrentlyLoaded(sceneName))
                                     {
                                         // if so, then do light magic
@@ -158,8 +161,10 @@ namespace PixelWizards.MultiScene
                         else
                         {
                             // and the rest additive
-                            LoadSceneAdditive(sceneName, useAsyncLoading, callback =>
+                            LoadSceneAdditive(sceneName, useAsyncLoading, innercallback =>
                             {
+                                callback?.Invoke(sceneName);
+
                                 if (IsScene_CurrentlyLoaded(sceneName))
                                 {
                                     // if so, then do light magic
