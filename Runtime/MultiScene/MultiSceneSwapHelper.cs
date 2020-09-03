@@ -31,6 +31,9 @@ namespace PixelWizards.MultiScene
 
         [Header("Load configs on Awake()?")]
         public bool loadConfigOnAwake = false;
+        [Header("Do Autoload in the Editor (not in play mode)?")]
+        public bool autoLoadConfigInEditor = false;
+
         [Header("List of configs that we wantt to load on Awake()")]
         public List<string> configList = new List<string>();
 
@@ -47,8 +50,12 @@ namespace PixelWizards.MultiScene
         {
             configCache.Clear();
 
-            if( loadConfigOnAwake)
+            if (loadConfigOnAwake)
             {
+#if UNITY_EDITOR
+                if (!autoLoadConfigInEditor)
+                    return;
+#endif
                 foreach( var config in configList)
                 {
                     LoadSceneConfigByName(config, false, true);
