@@ -39,7 +39,7 @@ namespace PixelWizards.Utilities
         private int sceneIndex = -1;
 
         [SerializeField]
-        private bool sceneEnabled;
+        private bool sceneEnabled = default;
 
         private void ValidateScene()
         {
