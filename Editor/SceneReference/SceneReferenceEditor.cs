@@ -21,13 +21,13 @@ namespace PixelWizards.Utilities
             "Scene is not in build settings.";
         
         private const string ERROR_SCENE_MISSING =
-            "You are refencing a scene that is not added to the build. Add it to the editor build settings now?";
+            "You are referencing a scene that is not added to the build. Add it to the editor build settings now?";
 
         private const string TOOLTIP_SCENE_DISABLED = 
             "Scene is not enebled in build settings.";
         
         private const string ERROR_SCENE_DISABLED =
-            "You are refencing a scene that is not active the build. Enable it in the build settings now?";
+            "You are referencing a scene that is not active the build. Enable it in the build settings now?";
         #endregion -- Constants -----------------------------------------------
         
         #region -- Private Variables ------------------------------------------
