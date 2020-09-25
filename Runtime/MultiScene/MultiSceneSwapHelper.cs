@@ -34,7 +34,7 @@ namespace PixelWizards.MultiScene
         [Header("Do Autoload in the Editor (not in play mode)?")]
         public bool autoLoadConfigInEditor = false;
 
-        [Header("List of configs that we wantt to load on Awake()")]
+        [Header("List of configs that we want to load on Awake()")]
         public List<string> configList = new List<string>();
 
         // our internal data model
