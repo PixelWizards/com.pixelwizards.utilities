@@ -17,6 +17,7 @@ namespace PixelWizards.Utilities
 
         private static GameObject replacement = null;
         private static bool keep = false;
+        private static bool keepName = false;
         private static bool applyChangesInChildren = false;
 
         [MenuItem("Edit/Replace Selection", false, -1)]
@@ -41,15 +42,21 @@ namespace PixelWizards.Utilities
                     replacement = EditorGUILayout.ObjectField(replacement, typeof(GameObject), true, GUILayout.ExpandWidth(true)) as GameObject;
                 }
                 GUILayout.EndHorizontal();
+
                 GUILayout.Space(5f);
 
-                keep = EditorGUILayout.Toggle("Keep Originals", keep);
+                keepName = EditorGUILayout.Toggle("Keep Original Names?", keepName);
+                GUILayout.Label("Replacement objects should keep the same names as the originals", EditorStyles.helpBox);
+
+                GUILayout.Space(5f);
+
+                keep = EditorGUILayout.Toggle("Keep Original Objects?", keep);
                 GUILayout.Label("Should we keep the original GameObjects or remove them?", EditorStyles.helpBox);
 
                 GUILayout.Space(10f);
 
                 applyChangesInChildren = EditorGUILayout.Toggle("Apply Transform Changes in Children", applyChangesInChildren);
-                GUILayout.Label("Attempt to apply Transform changes in child objects?", EditorStyles.helpBox);
+                GUILayout.Label("Attempt to apply Transform overrides in child objects?", EditorStyles.helpBox);
 
                 GUILayout.Space(10f);
 
@@ -63,34 +70,40 @@ namespace PixelWizards.Utilities
 
         private void DoReplacement()
         {
+            // can only do replacement if we have a new object to replace with
             if (replacement == null)
                 return;
 
-            var transforms = Selection.GetTransforms(
+            var selectionTransforms = Selection.GetTransforms(
                 SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable);
 
-            Undo.RegisterCompleteObjectUndo(transforms, "Replace Selection");
+            Undo.RegisterCompleteObjectUndo(selectionTransforms, "Replace Selection");
 
-            for(int i = 0; i <transforms.Length; i++)
+            for(int i = 0; i <selectionTransforms.Length; i++)
             {
-                var t = transforms[i];
-                var pref = PrefabUtility.GetPrefabAssetType(replacement);
-                var g = (GameObject)PrefabUtility.InstantiatePrefab(replacement);
+                var sourceObject = selectionTransforms[i];
+                var prefab = PrefabUtility.GetPrefabAssetType(replacement);
+                var replacementObject = (GameObject)PrefabUtility.InstantiatePrefab(replacement);
 
-                var gTransform = g.transform;
-                gTransform.parent = t.parent;
-                g.name = replacement.name + "_" + i;
-                gTransform.localPosition = t.localPosition;
-                gTransform.localScale = t.localScale;
-                gTransform.localRotation = t.localRotation;
+                var gTransform = replacementObject.transform;
+                gTransform.parent = sourceObject.parent;
+                replacementObject.name = replacement.name + "_" + i;
+                gTransform.localPosition = sourceObject.localPosition;
+                gTransform.localScale = sourceObject.localScale;
+                gTransform.localRotation = sourceObject.localRotation;
 
-                if( applyChangesInChildren)
+                if (keepName)
                 {
-                    var count = t.childCount;
+                    replacementObject.name = sourceObject.name;
+                }
+
+                if ( applyChangesInChildren)
+                {
+                    var count = sourceObject.childCount;
                     for( int j = 0; j < count; j++)
                     {
-                        var child = t.GetChild(j);
-                        var newChildren = g.GetComponentsInChildren<Transform>().ToList();
+                        var child = sourceObject.GetChild(j);
+                        var newChildren = replacementObject.GetComponentsInChildren<Transform>().ToList();
                         if (newChildren.Contains(child))
                         {
                             // found match in the new prefab
@@ -107,8 +120,10 @@ namespace PixelWizards.Utilities
                 }
             }
 
+            // if we don't want to keep them then remove the originals
             if (!keep)
             {
+                // remove the old objects
                 foreach (var g in Selection.gameObjects)
                 {
                     GameObject.DestroyImmediate(g);
