@@ -11,6 +11,7 @@
   },
   "keywords": [],
   "dependencies": {
-    "com.unity.timeline": "1.2.13"
+    "com.unity.timeline": "1.2.13",
+    "com.unity.textmeshpro": "2.0.1"
   }
 }
