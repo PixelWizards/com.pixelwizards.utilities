@@ -24,6 +24,14 @@ namespace PixelWizards.MultiScene
         /// </summary>
 		[Header("Name")]
 		public string name = "Main Scenes";
+
+        /// <summary>
+        /// Should we set a specific scene active as the lighting scene?
+        /// </summary>
+        [Header("Set Scene Active?")]
+        public bool setSceneActive = false;
+        public string activeSceneName = string.Empty;
+
         /// <summary>
         /// List of scenes that are in this set
         /// </summary>
