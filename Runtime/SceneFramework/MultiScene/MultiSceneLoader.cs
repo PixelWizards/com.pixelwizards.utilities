@@ -53,7 +53,7 @@ namespace PixelWizards.MultiScene
 		public List<SceneConfig> config = new List<SceneConfig>();
 
 		/// <summary>
-		/// Unloads any scenes currently loaded and then loads all of the defined scenes from config 
+		/// Unloads any scenes currently loaded and then loads all of the defined scenes from the scene config 
 		/// </summary>
         public void LoadAllScenes()
 		{
@@ -96,10 +96,12 @@ namespace PixelWizards.MultiScene
 
         /// <summary>
         /// Load a specific scene config, optionally unloads existing first (ie can be optionally additively loaded)
+        /// 
+        /// If a particular scene is already loaded then ignores it.
         /// </summary>
         /// <param name="config"></param>
         /// <param name="unloadExisting"></param>
-        public void LoadSceneConfig( SceneConfig config, bool unloadExisting)
+        public void LoadSceneConfig( SceneConfig config, bool unloadExisting = true)
 		{
 			for( int i = 0; i < config.sceneList.Count; i++)
 			{
@@ -117,11 +119,11 @@ namespace PixelWizards.MultiScene
 		}
 
         /// <summary>
-        /// Loads a scene config by name
+        /// Loads a scene config by name, if a particular scene is already loaded then ignores it.
         /// </summary>
         /// <param name="configName"></param>
         /// <param name="unloadExisting"></param>
-        public void LoadSceneConfigByName(string configName, bool unloadExisting)
+        public void LoadSceneConfigByName(string configName, bool unloadExisting = true)
         {
             foreach (var entry in config)
             {
@@ -190,7 +192,7 @@ namespace PixelWizards.MultiScene
         /// </summary>
         /// <param name="thisScene">the scene you would like to load</param>
         /// <param name="isAdditive">whether you want to use additve loading or not</param>
-		private void LoadScene( SceneReference thisScene, bool isAdditive)
+		private void LoadScene( SceneReference thisScene, bool isAdditive = false)
 		{
 			if (thisScene == null)
 			{
