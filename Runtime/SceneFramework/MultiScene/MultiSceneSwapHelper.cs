@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -53,6 +54,27 @@ namespace PixelWizards.MultiScene
         }
 
         /// <summary>
+        /// check if all of the scenes in a given config have completed loading yet
+        /// </summary>
+        /// <param name="configName"></param>
+        /// <returns></returns>
+        public bool IsConfigLoaded( string configName)
+        {
+            var loaded = true;
+            var config = multiSceneConfig.config.FirstOrDefault(c => c.name == configName);
+
+            foreach (var scene in config.sceneList)
+            {
+                if (!IsScene_CurrentlyLoaded(scene.SceneName))
+                {
+                    loaded = false;
+                }
+            }
+            
+            return loaded;
+        }
+
+        /// <summary>
         /// Load a given config from our MultiSceneConfig by name, optionally unloading all existing scenes and optionally using Async loading 
         /// </summary>
         /// <param name="configName"></param>
@@ -61,7 +83,10 @@ namespace PixelWizards.MultiScene
         /// <param name="callback"></param>
         public void LoadConfig( string configName, bool unloadExisting, bool useAsyncLoading, Action<string> callback = null)
         {
-            LoadSceneConfigByName(configName, unloadExisting, useAsyncLoading, callback);
+            LoadSceneConfigByName(configName, unloadExisting, useAsyncLoading, cb =>
+            {
+                callback?.Invoke(configName);
+            });
         }
 
         /// <summary>
@@ -72,7 +97,10 @@ namespace PixelWizards.MultiScene
         /// <param name="callback"></param>
         public void LoadConfig( string configName, bool unloadExisting, Action<string> callback = null)
         {
-            LoadSceneConfigByName(configName, unloadExisting, false, callback);
+            LoadSceneConfigByName(configName, unloadExisting, false, cb =>
+            {
+                callback?.Invoke(configName);
+            });
         }
 
         /// <summary>
@@ -90,7 +118,10 @@ namespace PixelWizards.MultiScene
             {
                 if (entry.name == configName)
                 {
-                    LoadSceneConfig(entry, unloadExisting, useAsyncLoading, callback);
+                    LoadSceneConfig(entry, unloadExisting, useAsyncLoading, cb =>
+                    {
+                        callback?.Invoke(configName);
+                    });
                     return;
                 }
             }

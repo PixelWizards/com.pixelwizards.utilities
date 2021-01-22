@@ -259,9 +259,9 @@ namespace PixelWizards.MultiScene
 #if UNITY_EDITOR
         private bool IsScene_CurrentlyLoaded_inEditor(string thisScene)
         {
-            for (int i = 0; i < UnityEditor.SceneManagement.EditorSceneManager.sceneCount; ++i)
+            for (int i = 0; i < EditorSceneManager.sceneCount; ++i)
             {
-                var scene = UnityEditor.SceneManagement.EditorSceneManager.GetSceneAt(i);
+                var scene = EditorSceneManager.GetSceneAt(i);
 
                 if (scene.name == thisScene)
                 {

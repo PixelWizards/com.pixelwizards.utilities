@@ -149,27 +149,32 @@ namespace PixelWizards.MultiScene
         /// <returns></returns>
         protected bool IsScene_CurrentlyLoaded(string thisScene)
         {
-#if UNITY_EDITOR
-            return IsScene_CurrentlyLoaded_inEditor(thisScene);
-#else
-            for (int i = 0; i < SceneManager.sceneCount; ++i)
+            if (!Application.isPlaying)
             {
-                var scene = SceneManager.GetSceneAt(i);
-                if (scene.name == thisScene)
+#if UNITY_EDITOR
+                return IsScene_CurrentlyLoaded_inEditor(thisScene);
+#endif
+            }
+            else
+            {
+                for (int i = 0; i < SceneManager.sceneCount; ++i)
                 {
-                    if( scene.isLoaded)
+                    var scene = SceneManager.GetSceneAt(i);
+                    if (scene.name == thisScene)
                     {
-                        //the scene is already loaded
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
+                        if (scene.isLoaded)
+                        {
+                            //the scene is already loaded
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                 }
+                return false;   //scene not currently loaded in the hierarchy
             }
-            return false;   //scene not currently loaded in the hierarchy
-#endif
         }
     }
 }
