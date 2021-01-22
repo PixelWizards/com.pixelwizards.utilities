@@ -153,6 +153,8 @@ namespace PixelWizards.MultiScene
             {
 #if UNITY_EDITOR
                 return IsScene_CurrentlyLoaded_inEditor(thisScene);
+#else
+                return false;
 #endif
             }
             else
