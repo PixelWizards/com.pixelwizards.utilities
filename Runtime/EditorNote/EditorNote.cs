@@ -50,7 +50,7 @@ namespace PixelWizards.Utilities
 			}
 			if (meshRenderer != null)
 			{
-				return Vector3.up * meshRenderer.bounds.size.y * 2.0f * gameObject.transform.localScale.y;
+				return Vector3.up * meshRenderer.bounds.size.y * 1.0f * gameObject.transform.localScale.y;
 			}
 			return Vector3.zero;
 		}

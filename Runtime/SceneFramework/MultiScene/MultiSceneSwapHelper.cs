@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 #if UNITY_EDITOR
@@ -36,7 +37,7 @@ namespace PixelWizards.MultiScene
         /// <summary>
         /// Added support for runtime 'on demand' loading - load one master scene that triggers a set of sub-scenes to be loaded if they aren't already
         /// </summary>
-        public void Awake()
+        public void OnEnable()
         {
             configCache.Clear();
 
@@ -46,9 +47,13 @@ namespace PixelWizards.MultiScene
                 if (!autoLoadConfigInEditor && !Application.isPlaying)
                     return;
 #endif
-                foreach( var config in configList)
+                foreach (var config in configList)
                 {
-                    LoadSceneConfigByName(config, false, true);
+                    // if the config isn't already loaded then load it up
+                    if (!IsConfigLoaded(config))
+                    {
+                        LoadSceneConfigByName(config, false, true);
+                    }
                 }
             }
         }
