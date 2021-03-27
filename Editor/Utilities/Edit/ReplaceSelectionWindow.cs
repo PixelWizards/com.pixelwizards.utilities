@@ -78,7 +78,7 @@ namespace PixelWizards.Utilities
             var selectionTransforms = Selection.GetTransforms(
                 SelectionMode.TopLevel | SelectionMode.Editable);
 #else
-            var transforms = Selection.GetTransforms(
+            var selectionTransforms = Selection.GetTransforms(
                 SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable);
 #endif
             
