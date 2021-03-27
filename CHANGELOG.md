@@ -4,6 +4,19 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.5.0-preview.1]
+- API fixes for 2021 (obsolete methods)
+- reverse anim clip tool 
+- updating editor note, scene swap helper (fixes / usability)
+
+## [0.4.0-preview.1]
+- fixing build issues / clean up / re-org of folder structure
+- clean up of scene framework
+- added a few other utils (free fly camera etc)
+- new sort hierarchy tool
+- some timeline debug HUD tools (shows active tracks / etc)
+- added 'keep existing name' option to object replacement window
+
 ## [0.3.0-preview.2]
 - cleanup / refactor of the multi-scene inspector, fixed a strange crash bug
 - added callback hooks for the multi-scene helper, fixed a few issues, 
