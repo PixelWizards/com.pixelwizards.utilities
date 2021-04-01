@@ -58,10 +58,17 @@ namespace PixelWizards.Utilities
             Debug.Log("Animation reversed!");
         }
 
-        [MenuItem("Assets/Create Reversed Clip", true)]
+        [MenuItem("Assets/Motion/Create Reversed Clip", true)]
         static bool ReverseClipValidation()
         {
-            return Selection.activeObject.GetType() == typeof(AnimationClip);
+            if( Selection.activeObject != null)
+            {
+                return Selection.activeObject.GetType() == typeof(AnimationClip);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public static AnimationClip GetSelectedClip()
