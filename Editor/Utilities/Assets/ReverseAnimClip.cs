@@ -8,7 +8,7 @@ namespace PixelWizards.Utilities
     public static class ReverseAnimClip
     {
 
-        [MenuItem("Assets/Create Reversed Clip", false, 14)]
+        [MenuItem("Assets/Animation/Create Reversed Clip", false, 14)]
         private static void ReverseClip()
         {
             string directoryPath = Path.GetDirectoryName(AssetDatabase.GetAssetPath(Selection.activeObject));

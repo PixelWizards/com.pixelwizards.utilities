@@ -79,6 +79,11 @@ namespace PixelWizards.MultiScene
             return loaded;
         }
 
+        public void LoadConfig(string configName)
+        {
+            LoadConfig(configName, true);
+        }
+
         /// <summary>
         /// Load a given config from our MultiSceneConfig by name, optionally unloading all existing scenes and optionally using Async loading 
         /// </summary>
