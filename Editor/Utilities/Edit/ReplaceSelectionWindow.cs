@@ -74,14 +74,9 @@ namespace PixelWizards.Utilities
             if (replacement == null)
                 return;
 
-#if UNITY_2021_1_OR_NEWER
             var selectionTransforms = Selection.GetTransforms(
                 SelectionMode.TopLevel | SelectionMode.Editable);
-#else
-            var selectionTransforms = Selection.GetTransforms(
-                SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable);
-#endif
-            
+
             Undo.RegisterCompleteObjectUndo(selectionTransforms, "Replace Selection");
 
             for(int i = 0; i <selectionTransforms.Length; i++)
