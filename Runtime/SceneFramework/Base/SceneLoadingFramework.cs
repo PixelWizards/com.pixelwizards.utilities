@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define USE_LOGGING
+
+using System;
 using System.Collections;
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
@@ -8,10 +10,8 @@ using UnityEngine.SceneManagement;
 
 namespace PixelWizards.MultiScene
 {
-
     public class SceneLoadingFramework : MonoBehaviour
     {
-
         public class SceneModel
         {
             public bool isLevelLoading = false;
@@ -44,7 +44,9 @@ namespace PixelWizards.MultiScene
         /// <param name="thisScene"></param>
         protected void SetActiveScene(string thisScene)
         {
+#if USE_LOGGING
             Debug.Log("Set active scene : " + thisScene);
+#endif
             var activeScene = SceneManager.GetSceneByName(thisScene);
             SceneManager.SetActiveScene(activeScene);
         }
@@ -60,20 +62,26 @@ namespace PixelWizards.MultiScene
         /// </summary>
         protected IEnumerator LoadSceneInternal(string newScene, LoadSceneMode sceneMode, bool useAsyncLoading, Action<string> callback = null)
         {
+#if USE_LOGGING
             Debug.Log("LoadSceneInternal: " + newScene);
+#endif
             AsyncOperation async = new AsyncOperation();
             try
             {
                 if (useAsyncLoading)
                 {
+#if USE_LOGGING
                     Debug.Log("Start async scene load: " + newScene);
+#endif
                     async = SceneManager.LoadSceneAsync(newScene, sceneMode);
-                    async.allowSceneActivation = true;          // scenes will activate themselves
+                    async.allowSceneActivation = false;          // do not let scenes activate themselves to prevent stall
                 }
                 else
                 {
                     SceneManager.LoadScene(newScene, sceneMode);
+#if USE_LOGGING
                     Debug.Log("LoadSceneInternal: " + newScene + " COMPLETE");
+#endif
                 }
             }
             catch (Exception e)
@@ -87,20 +95,26 @@ namespace PixelWizards.MultiScene
             {
                 if (async != null)
                 {
-                    while (!async.isDone)
+                    while (async.progress < 0.9f)
                     {
                         model.isLevelLoading = true;
                         yield return null;
                     }
 
+                    // now let the scenes activate
+                    async.allowSceneActivation = true;
+
                     if (async.isDone)
                     {
+                        yield return null;
+
                         model.isLevelLoading = false;
                         // TODO: should add a timer so we can log how long level loads take
 
                         callback?.Invoke(newScene);
-
+#if USE_LOGGING
                         Debug.Log("LoadSceneInternal: async load " + newScene + " COMPLETE");
+#endif
 
                         model.levelLoading = string.Empty;
                         async = null;

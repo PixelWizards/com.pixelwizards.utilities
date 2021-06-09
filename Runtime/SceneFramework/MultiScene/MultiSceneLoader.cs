@@ -1,4 +1,6 @@
-﻿using PixelWizards.Utilities;
+﻿//#define USE_LOGGING
+
+using PixelWizards.Utilities;
 using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -52,13 +54,52 @@ namespace PixelWizards.MultiScene
 		[Header("Scene Config")]
 		public List<SceneConfig> config = new List<SceneConfig>();
 
-		/// <summary>
-		/// Unloads any scenes currently loaded and then loads all of the defined scenes from the scene config 
-		/// </summary>
+        private void Awake()
+        {
+            // Added custom callbacks for lightprobe additive loading
+            LightProbes.needsRetetrahedralization += LightProbes_needsRetetrahedralization;
+            LightProbes.tetrahedralizationCompleted += LightProbes_tetrahedralizationCompleted;
+        }
+
+        public void OnDisable()
+        {
+            // remove our event hooks
+            LightProbes.needsRetetrahedralization -= LightProbes_needsRetetrahedralization;
+            LightProbes.tetrahedralizationCompleted -= LightProbes_tetrahedralizationCompleted;
+        }
+
+        /// <summary>
+        /// Event which is called after [[LightProbes.Tetrahedralize]] or [[LightProbes.TetrahedralizeAsync]] has finished computing a tetrahedralization.
+        /// </summary>
+        private void LightProbes_tetrahedralizationCompleted()
+        {
+#if USE_LOGGING
+            Debug.Log("LightProbes_tetrahedralizationCompleted callback received");
+#endif
+        }
+
+        /// <summary>
+        /// Event which is called when [[LightProbes.Tetrahedralize]] or [[LightProbes.TetrahedralizeAsync]] needs to be executed to include or clean up new LightProbes for lighting.
+        /// </summary>
+        private void LightProbes_needsRetetrahedralization()
+        {
+#if USE_LOGGING
+            Debug.Log("LightProbes_needsRetetrahedralization callback received");
+#endif
+            // do lightprobe gi magic
+            LightProbes.TetrahedralizeAsync();
+        }
+
+
+        /// <summary>
+        /// Unloads any scenes currently loaded and then loads all of the defined scenes from config 
+        /// </summary>
         public void LoadAllScenes()
 		{
+#if USE_LOGGING
             Debug.Log("MultiSceneLoader::LoadAllScenes()");
-			if (config.Count == 0)
+#endif
+            if (config.Count == 0)
 			{
 				Debug.LogError("No scene configs have been defined - nothing to load!");
 				return;
@@ -96,8 +137,6 @@ namespace PixelWizards.MultiScene
 
         /// <summary>
         /// Load a specific scene config, optionally unloads existing first (ie can be optionally additively loaded)
-        /// 
-        /// If a particular scene is already loaded then ignores it.
         /// </summary>
         /// <param name="config"></param>
         /// <param name="unloadExisting"></param>
@@ -119,7 +158,7 @@ namespace PixelWizards.MultiScene
 		}
 
         /// <summary>
-        /// Loads a scene config by name, if a particular scene is already loaded then ignores it.
+        /// Loads a scene config by name
         /// </summary>
         /// <param name="configName"></param>
         /// <param name="unloadExisting"></param>
@@ -192,7 +231,7 @@ namespace PixelWizards.MultiScene
         /// </summary>
         /// <param name="thisScene">the scene you would like to load</param>
         /// <param name="isAdditive">whether you want to use additve loading or not</param>
-		private void LoadScene( SceneReference thisScene, bool isAdditive = false)
+		private void LoadScene( SceneReference thisScene, bool isAdditive)
 		{
 			if (thisScene == null)
 			{
@@ -205,14 +244,14 @@ namespace PixelWizards.MultiScene
 				if (Application.isPlaying)
 				{
 					if (SceneManager.GetSceneByName(thisScene.SceneName) == null)
-						Debug.LogError("Scene: " + thisScene.SceneName + " doesn't exist in build settings");
+                    {
+                        Debug.LogError("Scene: " + thisScene.SceneName + " doesn't exist in build settings");
+                    }
 					else
                     {
                         if(!IsScene_CurrentlyLoaded(thisScene.SceneName))
                         {
                             SceneManager.LoadScene(thisScene.SceneName, LoadSceneMode.Additive);
-                            // kick the light probes
-                            LightProbes.TetrahedralizeAsync();
                         }
                     }
 				}
@@ -220,35 +259,31 @@ namespace PixelWizards.MultiScene
 				{
 #if UNITY_EDITOR
 					EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(thisScene.Scene), OpenSceneMode.Additive);
-                    // kick the light probes
-                    LightProbes.TetrahedralizeAsync();
 #endif
                 }
-			}
+            }
 			else
 			{
 				if (Application.isPlaying)
 				{
                     if (SceneManager.GetSceneByName(thisScene.SceneName) == null)
+                    {
                         Debug.LogError("Scene: " + thisScene.SceneName + " doesn't exist in build settings");
+                    }
                     else
                     if (!IsScene_CurrentlyLoaded(thisScene.SceneName))
                     {
                         SceneManager.LoadScene(thisScene.SceneName, LoadSceneMode.Single);
-                        // kick the light probes
-                        LightProbes.TetrahedralizeAsync();
                     }
-				}
+                }
 				else
 				{
 
 #if UNITY_EDITOR
                     EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(thisScene.Scene), OpenSceneMode.Single);
-                    // kick the light probes
-                    LightProbes.TetrahedralizeAsync();
 #endif
                 }
-			}
+            }
 		}
 
         /// <summary>
