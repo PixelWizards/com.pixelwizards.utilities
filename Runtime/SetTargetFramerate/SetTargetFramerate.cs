@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetTargetFramerate : MonoBehaviour
+namespace PixelWizards.Utilities
 {
-    public int targetFramerate = 30;
-
-    // Start is called before the first frame update
-    void Start()
+    public class SetTargetFramerate : MonoBehaviour
     {
-        Application.targetFrameRate = targetFramerate;
-    }
+        public int targetFramerate = 60;
 
+        // Start is called before the first frame update
+        private void Awake()
+        {
+            Application.targetFrameRate = targetFramerate;
+        }
+    }
 }
