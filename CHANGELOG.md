@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - API fixes for 2021 (obsolete methods)
 - reverse anim clip tool 
 - updating editor note, scene swap helper (fixes / usability)
+- integrated new GI callbacks for proper lightprobe refresh on additive scene loading
 
 ## [0.4.0-preview.1]
 - fixing build issues / clean up / re-org of folder structure
@@ -16,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - new sort hierarchy tool
 - some timeline debug HUD tools (shows active tracks / etc)
 - added 'keep existing name' option to object replacement window
+- new freecam flyaround script
+- fix for making builds (wrapped some code with #if UNITY_EDITOR
 
 ## [0.3.0-preview.2]
 - cleanup / refactor of the multi-scene inspector, fixed a strange crash bug
