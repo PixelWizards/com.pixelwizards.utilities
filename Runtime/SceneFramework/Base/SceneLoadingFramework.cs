@@ -1,5 +1,4 @@
-﻿//#define USE_LOGGING
-
+﻿#define USE_LOGGING
 using System;
 using System.Collections;
 #if UNITY_EDITOR
@@ -10,6 +9,9 @@ using UnityEngine.SceneManagement;
 
 namespace PixelWizards.MultiScene
 {
+    /// <summary>
+    /// Wrapper for Unity's scene loading system to provide loading / unloading of individual scenes in either sync or async manner
+    /// </summary>
     public class SceneLoadingFramework : MonoBehaviour
     {
         public class SceneModel
@@ -25,7 +27,13 @@ namespace PixelWizards.MultiScene
         {
             model.levelLoading = newEnvironment;
 
-            StartCoroutine(LoadSceneInternal(model.levelLoading, LoadSceneMode.Single, useAsyncLoading, callback));
+            StartCoroutine(LoadSceneInternal(model.levelLoading, LoadSceneMode.Single, useAsyncLoading, cb =>
+            {
+#if USE_LOGGING
+                Debug.Log("SceneLoadingFramework::LoadNewScene Callback recieved!");
+#endif
+                callback?.Invoke(newEnvironment);
+            }));
         }
 
         /// <summary>
@@ -35,7 +43,13 @@ namespace PixelWizards.MultiScene
         {
             model.levelLoading = newEnvironment;
 
-            StartCoroutine(LoadSceneInternal(model.levelLoading, LoadSceneMode.Additive, useAsyncLoading, callback));
+            StartCoroutine(LoadSceneInternal(model.levelLoading, LoadSceneMode.Additive, useAsyncLoading, cb =>
+            {
+#if USE_LOGGING
+                Debug.Log("SceneLoadingFramework::LoadSceneAdditive Callback recieved!");
+#endif
+                callback?.Invoke(newEnvironment);
+            }));
         }
 
         /// <summary>
@@ -45,7 +59,7 @@ namespace PixelWizards.MultiScene
         protected void SetActiveScene(string thisScene)
         {
 #if USE_LOGGING
-            Debug.Log("Set active scene : " + thisScene);
+            Debug.Log("SceneLoadingFramework::Set active scene : " + thisScene);
 #endif
             var activeScene = SceneManager.GetSceneByName(thisScene);
             SceneManager.SetActiveScene(activeScene);
@@ -53,7 +67,7 @@ namespace PixelWizards.MultiScene
 
         protected void UnloadScene(string sceneName)
         {
-            Debug.Log("Unload scene async : " + sceneName);
+            Debug.Log("SceneLoadingFramework::Unload scene async : " + sceneName);
             SceneManager.UnloadSceneAsync(sceneName);
         }
 
@@ -63,7 +77,7 @@ namespace PixelWizards.MultiScene
         protected IEnumerator LoadSceneInternal(string newScene, LoadSceneMode sceneMode, bool useAsyncLoading, Action<string> callback = null)
         {
 #if USE_LOGGING
-            Debug.Log("LoadSceneInternal: " + newScene);
+            Debug.Log("SceneLoadingFramework::LoadSceneInternal: " + newScene);
 #endif
             AsyncOperation async = new AsyncOperation();
             try
@@ -71,7 +85,7 @@ namespace PixelWizards.MultiScene
                 if (useAsyncLoading)
                 {
 #if USE_LOGGING
-                    Debug.Log("Start async scene load: " + newScene);
+                    Debug.Log("SceneLoadingFramework::Start async scene load: " + newScene);
 #endif
                     async = SceneManager.LoadSceneAsync(newScene, sceneMode);
                     async.allowSceneActivation = false;          // do not let scenes activate themselves to prevent stall
@@ -79,14 +93,15 @@ namespace PixelWizards.MultiScene
                 else
                 {
                     SceneManager.LoadScene(newScene, sceneMode);
+                    callback?.Invoke(newScene);
 #if USE_LOGGING
-                    Debug.Log("LoadSceneInternal: " + newScene + " COMPLETE");
+                    Debug.Log("SceneLoadingFramework::LoadSceneInternal: " + newScene + " COMPLETE");
 #endif
                 }
             }
             catch (Exception e)
             {
-                Debug.LogError("Caught Exception " + e.Message + " while loading scene: " + newScene + " - might not be in your build settings?");
+                Debug.LogError("SceneLoadingFramework::Caught Exception " + e.Message + " while loading scene: " + newScene + " - might not be in your build settings?");
                 async = null;
                 yield break;
             }
@@ -95,36 +110,31 @@ namespace PixelWizards.MultiScene
             {
                 if (async != null)
                 {
-                    while (async.progress < 0.9f)
+                    while(!async.isDone)
                     {
-                        model.isLevelLoading = true;
-                        yield return null;
-                    }
-
-                    // now let the scenes activate
-                    async.allowSceneActivation = true;
-
-                    if (async.isDone)
-                    {
-                        yield return null;
-
-                        model.isLevelLoading = false;
-                        // TODO: should add a timer so we can log how long level loads take
-
-                        callback?.Invoke(newScene);
 #if USE_LOGGING
-                        Debug.Log("LoadSceneInternal: async load " + newScene + " COMPLETE");
+                        Debug.Log("SceneLoadingFramework::" + newScene + " loading progress: " + async.progress + " async isdone: " + async.isDone);
 #endif
+                        if( async.progress >= 0.9f)
+                        {
+                            // now let the scenes activate
+                            async.allowSceneActivation = true;
 
-                        model.levelLoading = string.Empty;
-                        async = null;
-                        yield break;
+                            callback?.Invoke(newScene);
+#if USE_LOGGING
+                            Debug.Log("SceneLoadingFramework::LoadSceneInternal: async load " + newScene + " COMPLETE");
+#endif
+                            model.isLevelLoading = false;
+                            model.levelLoading = string.Empty;
+                        }
+
+                        yield return null;
                     }
                 }
                 else
                 {
                     async = null;
-                    Debug.LogError("Async loading of scene failed for scene: " + newScene + " - might not be in your build settings?");
+                    Debug.LogError("SceneLoadingFramework::Async loading of scene failed for scene: " + newScene + " - might not be in your build settings?");
                 }
             }
 
@@ -178,15 +188,15 @@ namespace PixelWizards.MultiScene
                     var scene = SceneManager.GetSceneAt(i);
                     if (scene.name == thisScene)
                     {
-                        if (scene.isLoaded)
-                        {
+                        //if (scene.isLoaded)
+                        //{
                             //the scene is already loaded
                             return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        //}
+                        //else
+                        //{
+                        //    return false;
+                        //}
                     }
                 }
                 return false;   //scene not currently loaded in the hierarchy

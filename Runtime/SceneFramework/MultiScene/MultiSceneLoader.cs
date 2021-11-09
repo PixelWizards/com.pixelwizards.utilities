@@ -69,6 +69,33 @@ namespace PixelWizards.MultiScene
         }
 
         /// <summary>
+        /// retrieves a scene config so you can process the scenes manually
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public SceneConfig GetConfigByName(string name)
+        {
+            foreach( var sceneConfig in config)
+            {
+                if( sceneConfig.name == name)
+                {
+                    return sceneConfig;
+                }
+            }
+            return null;
+        }
+
+        /****************************************************************
+         * 
+         * 
+         *  The rest of the API below provides scene loading functionality so that we can load directly from the scriptable object.
+         *  
+         *  The best way to handle this in your own game is via the MultiSceneSwapHelper MonoBehaviour that you can add to a scene
+         * 
+         * 
+         ***************************************************************/
+
+        /// <summary>
         /// Event which is called after [[LightProbes.Tetrahedralize]] or [[LightProbes.TetrahedralizeAsync]] has finished computing a tetrahedralization.
         /// </summary>
         private void LightProbes_tetrahedralizationCompleted()

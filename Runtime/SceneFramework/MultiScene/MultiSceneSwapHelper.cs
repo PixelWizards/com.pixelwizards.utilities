@@ -1,4 +1,4 @@
-﻿//#define USE_LOGGING
+﻿#define USE_LOGGING
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 namespace PixelWizards.MultiScene
 {
     /// <summary>
-    /// Simple wrapper that the timeline track talks to.
+    /// Simple wrapper that provides a Scene loading API as well as a connection for the bundled Timeline Track to talk to
     /// 
     /// Note: implements the scene loading separately from the MultiSceneConfig 
     /// so we can do callbacks on scene load (coroutines etc) that we can't do in a scriptable objects
@@ -37,7 +37,7 @@ namespace PixelWizards.MultiScene
         /// <summary>
         /// Added support for runtime 'on demand' loading - load one master scene that triggers a set of sub-scenes to be loaded if they aren't already
         /// </summary>
-        public void Awake()
+        public void Start()
         {
             configCache.Clear();
 
@@ -51,7 +51,12 @@ namespace PixelWizards.MultiScene
                 {
                     if (!IsConfigLoaded(config))
                     {
-                    LoadSceneConfigByName(config, false, true);
+                        LoadConfig(config, false, true, callback =>
+                        {
+#if USE_LOGGING
+                            Debug.Log("MultiSceneSwapHelper:: Config : " + config + " completed loading. We have " + SceneManager.sceneCount + " scenes loaded");
+#endif
+                        });
 					}
                 }
             }
@@ -74,7 +79,7 @@ namespace PixelWizards.MultiScene
         private void LightProbes_tetrahedralizationCompleted()
         {
 #if USE_LOGGING
-            Debug.Log("LightProbes_tetrahedralizationCompleted callback received");
+            Debug.Log("MultiSceneSwapHelper:: LightProbes_tetrahedralizationCompleted callback received");
 #endif
         }
 /// <summary>
@@ -87,6 +92,15 @@ namespace PixelWizards.MultiScene
             var loaded = true;
             var config = multiSceneConfig.config.FirstOrDefault(c => c.name == configName);
 
+            if( config == null)
+            {
+                return false;
+            }
+            if( config.sceneList == null)
+            {
+                return false;
+            }
+
             foreach (var scene in config.sceneList)
             {
                 if (!IsScene_CurrentlyLoaded(scene.SceneName))
@@ -98,9 +112,14 @@ namespace PixelWizards.MultiScene
             return loaded;
         }
 
+        /// <summary>
+        /// simple entry point - just tell it what config you want to load and don't worry yourself about the rest
+        /// Note: loads all scenes in the given config SYNC and unloads any existing scenes while doing so
+        /// </summary>
+        /// <param name="configName"></param>
         public void LoadConfig(string configName)
         {
-            LoadConfig(configName, true);
+            LoadConfig(configName, true, false, null);
         }
 
         /// <summary>
@@ -109,39 +128,10 @@ namespace PixelWizards.MultiScene
         private void LightProbes_needsRetetrahedralization()
         {
 #if USE_LOGGING
-            Debug.Log("LightProbes_needsRetetrahedralization callback received");
+            Debug.Log("MultiSceneSwapHelper::LightProbes_needsRetetrahedralization callback received");
 #endif
             // do lightprobe gi magic
             LightProbes.TetrahedralizeAsync();
-        }
-
-        /// <summary>
-        /// Load a given config from our MultiSceneConfig by name, optionally unloading all existing scenes and optionally using Async loading 
-        /// </summary>
-        /// <param name="configName"></param>
-        /// <param name="unloadExisting"></param>
-        /// <param name="useAsyncLoading"></param>
-        /// <param name="callback"></param>
-        public void LoadConfig( string configName, bool unloadExisting, bool useAsyncLoading, Action<string> callback = null)
-        {
-            LoadSceneConfigByName(configName, unloadExisting, useAsyncLoading, cb =>
-            {
-                callback?.Invoke(configName);
-            });
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="configName"></param>
-        /// <param name="unloadExisting"></param>
-        /// <param name="callback"></param>
-        public void LoadConfig( string configName, bool unloadExisting, Action<string> callback = null)
-        {
-            LoadSceneConfigByName(configName, unloadExisting, false, cb =>
-            {
-                callback?.Invoke(configName);
-            });
         }
 
         /// <summary>
@@ -153,22 +143,45 @@ namespace PixelWizards.MultiScene
             UnloadConfigInternal(configName);
         }
 
-        private void LoadSceneConfigByName(string configName, bool unloadExisting, bool useAsyncLoading, Action<string> callback = null)
+        /// <summary>
+        /// our primary config loader
+        /// </summary>
+        /// <param name="configName">name of the config we want to load</param>
+        /// <param name="unloadExisting">do we need to clear any existing scenes?</param>
+        /// <param name="useAsyncLoading">use async loading</param>
+        /// <param name="callback">if you want to fire a callback when the config is loaded</param>
+        public void LoadConfig(string configName, bool unloadExisting, bool useAsyncLoading, Action<string> callback = null)
         {
-            foreach (var entry in multiSceneConfig.config)
+#if USE_LOGGING 
+            Debug.Log("MultiSceneSwapHelper::LoadConfig() - " + configName);
+#endif
+            var config = multiSceneConfig.GetConfigByName(configName);
+
+            if( config != null)
             {
-                if (entry.name == configName)
+                LoadSceneConfig(config, unloadExisting, useAsyncLoading, cb =>
                 {
-                    LoadSceneConfig(entry, unloadExisting, useAsyncLoading, callback);
-                    return;
-                }
+                    callback?.Invoke(configName);
+                });
             }
+                
             // if we get here, we didn't find the config
-            Debug.LogWarning("MultiSceneLoader::LoadSceneConfigByName() - could not find config: " + configName);
+            Debug.LogWarning("MultiSceneLoader::LoadConfig() - could not find config: " + configName);
         }
 
-        private void LoadSceneConfig(SceneConfig config, bool unloadExisting, bool useAsyncLoading, Action<string> callback = null)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">the config that we want to load</param>
+        /// <param name="unloadExisting"></param>
+        /// <param name="useAsyncLoading"></param>
+        /// <param name="callback"></param>
+        public void LoadSceneConfig(SceneConfig config, bool unloadExisting, bool useAsyncLoading, Action<string> callback = null)
         {
+#if USE_LOGGING
+            Debug.Log("MultiSceneSwapHelper::LoadSceneConfig() - " + config.name);
+#endif
+
 #if UNITY_EDITOR
             if (!Application.isPlaying)
             {
@@ -184,13 +197,15 @@ namespace PixelWizards.MultiScene
             // is this config already in our cache? ie are the scenes loaded already?
             if (configCache.Contains(config.name))
             {
-               // Debug.Log("LoadSceneConfig() - " + config.name + " is already in our cache, ignoring call");
+#if USE_LOGGING
+                Debug.Log("MultiSceneSwapHelper::LoadSceneConfig() - " + config.name + " is already in our cache, ignoring call");
+#endif
                 return;
             }
             else
             {
 #if USE_LOGGING
-                Debug.Log("Starting scene load for config: " + config.name);
+                Debug.Log("MultiSceneSwapHelper::Starting scene load for config: " + config.name);
 #endif
                 configCache.Add(config.name);
             }
@@ -199,29 +214,40 @@ namespace PixelWizards.MultiScene
             {
                 var sceneName = config.sceneList[i].SceneName;
 #if USE_LOGGING
-                Debug.Log("Loading scene from config : " + sceneName);
+                Debug.Log("MultiSceneSwapHelper::Loading scene from config : " + sceneName);
 #endif
                 if (Application.isPlaying)
                 {
+#if USE_LOGGING
+                    Debug.Log("MultiSceneSwapHelper::Application is playing, loading runtime scenes from config : " + sceneName);
+#endif
                     if (SceneManager.GetSceneByName(sceneName) == null)
                     {
                         Debug.LogError("Scene: " + sceneName + " doesn't exist in build settings");
                     }
                         
-
                     if (!IsScene_CurrentlyLoaded(sceneName))
                     {
+#if USE_LOGGING 
+                        Debug.Log("MultiSceneSwapHelper::Scene " + sceneName + " isn't currently loaded, loading...");
+#endif
                         if (i == 0)
                         {
                             if (unloadExisting )
                             {
+#if USE_LOGGING
+                                Debug.Log("MultiSceneSwapHelper::Unloading existing scenes first - loading " + sceneName + " in 'single' mode to clear existing scenes");
+#endif
                                 // if we need to unload existing, then load the first in single mode, otherwise everything is additive
                                 LoadNewScene(sceneName, useAsyncLoading, innercallback =>
                                 {
-                                    callback?.Invoke(sceneName);
-
                                     if (IsScene_CurrentlyLoaded(sceneName))
                                     {
+#if USE_LOGGING
+                                        Debug.Log("MultiSceneSwapHelper::Scene " + sceneName + " is loaded, firing callback and checking to see if we need to set it active");
+#endif
+                                        callback?.Invoke(sceneName);
+
                                         if (config.setSceneActive)
                                         {
                                             if (sceneName == config.activeSceneName)
@@ -229,37 +255,34 @@ namespace PixelWizards.MultiScene
                                                 SetActiveScene(sceneName);
                                             }
                                         }
-#if CUSTOM_GI_BUILD
-                                        // Tetrahedralize is done in  LightProbes_needsRetetrahedralization callback now
-#else
-                                        // if so, then do light magic
-                                        LightProbes.TetrahedralizeAsync();
-#endif
                                     }
                                 });
                             }
                             else
                             {
+#if USE_LOGGING
+                                Debug.Log("MultiSceneSwapHelper::Loading " + sceneName + " additively...");
+#endif
                                 // and the rest additive
                                 LoadSceneAdditive(sceneName, useAsyncLoading, innercallback =>
                                 {
-                                    callback?.Invoke(sceneName);
-
+#if USE_LOGGING
+                                    Debug.Log("MultiSceneSwapHelper::LoadSceneAdditive completed for scene: " + sceneName);
+#endif
                                     if (IsScene_CurrentlyLoaded(sceneName))
                                     {
-                                        if( config.setSceneActive)
+                                        callback?.Invoke(sceneName);
+
+#if USE_LOGGING
+                                        Debug.Log("MultiSceneSwapHelper::Scene " + sceneName + " is loaded, firing callback and checking to see if we need to set it active");
+#endif
+                                        if ( config.setSceneActive)
                                         {
                                             if( sceneName == config.activeSceneName)
                                             {
                                                 SetActiveScene(sceneName);
                                             }
                                         }
-#if CUSTOM_GI_BUILD
-                                        // Tetrahedralize is done in  LightProbes_needsRetetrahedralization callback now
-#else
-                                        // if so, then do light magic
-                                        LightProbes.TetrahedralizeAsync();
-#endif
                                     }
                                 });
                             }
@@ -267,13 +290,19 @@ namespace PixelWizards.MultiScene
                         }
                         else
                         {
+#if USE_LOGGING
+                            Debug.Log("MultiSceneSwapHelper::Loading " + sceneName + " additively...");
+#endif
                             // and the rest additive
                             LoadSceneAdditive(sceneName, useAsyncLoading, innercallback =>
                             {
-                                callback?.Invoke(sceneName);
-
                                 if (IsScene_CurrentlyLoaded(sceneName))
                                 {
+                                    callback?.Invoke(sceneName);
+
+#if USE_LOGGING
+                                    Debug.Log("MultiSceneSwapHelper::Scene " + sceneName + " is loaded, firing callback and checking to see if we need to set it active");
+#endif
                                     if (config.setSceneActive)
                                     {
                                         if (sceneName == config.activeSceneName)
@@ -281,12 +310,6 @@ namespace PixelWizards.MultiScene
                                             SetActiveScene(sceneName);
                                         }
                                     }
-#if CUSTOM_GI_BUILD
-                                    // Tetrahedralize is done in  LightProbes_needsRetetrahedralization callback now
-#else
-                                        // if so, then do light magic
-                                        LightProbes.TetrahedralizeAsync();
-#endif
                                 }
                             });
                         }
@@ -294,12 +317,16 @@ namespace PixelWizards.MultiScene
                 }
                 else
                 {
+#if USE_LOGGING
+                    Debug.Log("MultiSceneSwapHelper::Application is NOT playing, loading EDITOR scenes from config : " + sceneName);
+#endif
+
 #if UNITY_EDITOR
                     // if it's not already loaded
                     if (!IsScene_CurrentlyLoaded_inEditor(sceneName))
                     {
 #if USE_LOGGING
-                        Debug.Log("Editor: loading scene: " + sceneName);
+                        Debug.Log("MultiSceneSwapHelper::Editor: loading scene: " + sceneName);
 #endif
                         // load the scene
                         EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(config.sceneList[i].Scene), OpenSceneMode.Additive);
@@ -314,20 +341,11 @@ namespace PixelWizards.MultiScene
                                     SetActiveScene(sceneName);
                                 }
                             }
-#if CUSTOM_GI_BUILD
-                            // Tetrahedralize is done in  LightProbes_needsRetetrahedralization callback now
-#else
-                                        // if so, then do light magic
-                                        LightProbes.TetrahedralizeAsync();
-#endif
                         }
                     }
 #endif
                 }
             }
-#if USE_LOGGING
-            Debug.Log("Scene load for config: " + config.name + " COMPLETE");
-#endif
         }
 
         /// <summary>
@@ -339,7 +357,7 @@ namespace PixelWizards.MultiScene
             if( configCache.Contains(thisConfig))
             {
 #if USE_LOGGING
-                Debug.Log("UnloadConfig : " + thisConfig + " starting...");
+                Debug.Log("MultiSceneSwapHelper::UnloadConfig : " + thisConfig + " starting...");
 #endif
                 configCache.Remove(thisConfig);
             }
@@ -357,7 +375,7 @@ namespace PixelWizards.MultiScene
                 }
             }
 #if USE_LOGGING
-            Debug.Log("UnloadConfig : " + thisConfig + " complete...");
+            Debug.Log("MultiSceneSwapHelper::UnloadConfig : " + thisConfig + " complete...");
 #endif
         }
 
@@ -379,7 +397,7 @@ namespace PixelWizards.MultiScene
                             if( scene.isLoaded)
                             {
 #if USE_LOGGING
-                                Debug.Log("Unload scene async: " + scene.name);
+                                Debug.Log("MultiSceneSwapHelper::Unload scene async: " + scene.name);
 #endif
 
                                 SceneManager.UnloadSceneAsync(scene);
@@ -389,7 +407,7 @@ namespace PixelWizards.MultiScene
                         else
                         {
 #if USE_LOGGING
-                            Debug.Log("Editor: close scene : " + scene.name);
+                            Debug.Log("MultiSceneSwapHelper::Editor: close scene : " + scene.name);
 #endif
 
                             EditorSceneManager.CloseScene(scene, true);
