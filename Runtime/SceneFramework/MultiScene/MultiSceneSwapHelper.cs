@@ -39,6 +39,10 @@ namespace PixelWizards.MultiScene
         /// </summary>
         public void Start()
         {
+            // Added custom callbacks for lightprobe additive loading
+            LightProbes.needsRetetrahedralization += LightProbes_needsRetetrahedralization;
+            LightProbes.tetrahedralizationCompleted += LightProbes_tetrahedralizationCompleted;
+
             configCache.Clear();
 
             if (loadConfigOnAwake)
@@ -61,9 +65,6 @@ namespace PixelWizards.MultiScene
                 }
             }
 
-            // Added custom callbacks for lightprobe additive loading
-            LightProbes.needsRetetrahedralization += LightProbes_needsRetetrahedralization;
-            LightProbes.tetrahedralizationCompleted += LightProbes_tetrahedralizationCompleted;
         }
 
         public void OnDisable()
