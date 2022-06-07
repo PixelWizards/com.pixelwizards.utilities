@@ -4,52 +4,52 @@ using UnityEngine;
 namespace PixelWizards.MultiScene
 {
     /// <summary>
-    /// all of the localization for the UI
-    /// </summary>
-    public static class Loc
-    {
-        public const string WindowTitle = "Multi-Scene Config";
-        public const string TopDesc = "Allows you to define sets of scenes that can be loaded either as one 'set' or individually as desired. Useful for defining subsets of a project that different team members can work on independently.";
-        public const string ConfigList = "Config List";
-        public const string ConfigName = "Config name: ";
-        public const string SceneName = "Scene:";
-        public const string AddNewScene = "Add New Scene";
-        public const string MoveConfig = "Move Config";
-        public const string MoveTop = "Top";
-        public const string MoveUp = "Up";
-        public const string MoveDown = "Down";
-        public const string MoveBottom = "Last";
-        public const string RemoveConfig = "Remove Config";
-        public const string AddNewConfig = "Add new Config";
-        public const string NewConfigName = "New Config";
-        public const string LoadAllScenes = "Load All Scenes";
-        public const string LoadAllScenesDesc = "Loads all configs in the order they are defined";
-        public const string LoadSubScenes = "Load Sub Config Scenes";
-        public const string LoadSubScenesDesc = "Load scenes defined in a specific config, from above.";
-        public const string LoadOnlyScenes = "Loads ONLY the scenes defined in ";
-        public const string LoadXScenes = "Load {0} Scenes";
-        public const string SceneLoading = "Scene Loaders";
-        public const string SceneLoadTip = "Load ALL scenes, or only specific scenes from a given config.";
-        public const string SceneList = "Scene List";
-    }
-
-
-    public class SceneConfigEntry
-    {
-        public SceneConfig config;              // the config this belongs to
-
-        public SceneConfigEntry(SceneConfig thisConfig)
-        {
-            config = thisConfig;
-        }
-    }
-
-    /// <summary>
     /// Custom inspector for the MultiScene Scriptable Object
     /// </summary>
     [CustomEditor(typeof(MultiSceneLoader))]
     public class MultiSceneLoaderEditor : Editor
     {
+        /// <summary>
+        /// all of the localization for the UI
+        /// </summary>
+        public static class MultiSceneLoc
+        {
+            public const string WindowTitle = "Multi-Scene Config";
+            public const string TopDesc = "Allows you to define sets of scenes that can be loaded either as one 'set' or individually as desired. Useful for defining subsets of a project that different team members can work on independently.";
+            public const string ConfigList = "Config List";
+            public const string ConfigName = "Config name: ";
+            public const string SceneName = "Scene:";
+            public const string AddNewScene = "Add New Scene";
+            public const string MoveConfig = "Move Config";
+            public const string MoveTop = "Top";
+            public const string MoveUp = "Up";
+            public const string MoveDown = "Down";
+            public const string MoveBottom = "Last";
+            public const string RemoveConfig = "Remove Config";
+            public const string AddNewConfig = "Add new Config";
+            public const string NewConfigName = "New Config";
+            public const string LoadAllScenes = "Load All Scenes";
+            public const string LoadAllScenesDesc = "Loads all configs in the order they are defined";
+            public const string LoadSubScenes = "Load Sub Config Scenes";
+            public const string LoadSubScenesDesc = "Load scenes defined in a specific config, from above.";
+            public const string LoadOnlyScenes = "Loads ONLY the scenes defined in ";
+            public const string LoadXScenes = "Load {0} Scenes";
+            public const string SceneLoading = "Scene Loaders";
+            public const string SceneLoadTip = "Load ALL scenes, or only specific scenes from a given config.";
+            public const string SceneList = "Scene List";
+        }
+
+
+        public class SceneConfigEntry
+        {
+            public SceneConfig config;              // the config this belongs to
+
+            public SceneConfigEntry(SceneConfig thisConfig)
+            {
+                config = thisConfig;
+            }
+        }
+
         /// <summary>
         /// The scriptable object that we are editing
         /// </summary>
@@ -75,9 +75,9 @@ namespace PixelWizards.MultiScene
             serializedObject.Update();
 
             EditorGUILayout.Space();
-            GUILayout.Label(Loc.WindowTitle, EditorStyles.boldLabel);
+            GUILayout.Label(MultiSceneLoc.WindowTitle, EditorStyles.boldLabel);
 
-            GUILayout.Label(Loc.TopDesc, EditorStyles.helpBox);
+            GUILayout.Label(MultiSceneLoc.TopDesc, EditorStyles.helpBox);
 
             GUILayout.Space(15f);
 
@@ -86,37 +86,37 @@ namespace PixelWizards.MultiScene
             EditorGUILayout.Space(10f);
 
             // show the load all scenes button all of the time
-            GUILayout.Label(Loc.LoadAllScenes, EditorStyles.boldLabel);
+            GUILayout.Label(MultiSceneLoc.LoadAllScenes, EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
 
-            if (GUILayout.Button(Loc.LoadAllScenes, GUILayout.MinHeight(100), GUILayout.Height(35)))
+            if (GUILayout.Button(MultiSceneLoc.LoadAllScenes, GUILayout.MinHeight(100), GUILayout.Height(35)))
             {
                 sceneConfig.LoadAllScenes();
             }
                 
-            GUILayout.Label(Loc.LoadAllScenesDesc, EditorStyles.helpBox);
+            GUILayout.Label(MultiSceneLoc.LoadAllScenesDesc, EditorStyles.helpBox);
             EditorGUILayout.Space(5);
 
             // the sub scene loader if users want to 
-            botToggle = EditorGUILayout.Foldout(botToggle, Loc.SceneLoading);
+            botToggle = EditorGUILayout.Foldout(botToggle, MultiSceneLoc.SceneLoading);
             if (botToggle)
             {
                 botScroll = GUILayout.BeginScrollView(botScroll, false, true);
                 {
                     EditorGUILayout.Space(5);
-                    GUILayout.Label(Loc.LoadSubScenes, EditorStyles.boldLabel);
-                    GUILayout.Label(Loc.LoadSubScenesDesc, EditorStyles.helpBox);
+                    GUILayout.Label(MultiSceneLoc.LoadSubScenes, EditorStyles.boldLabel);
+                    GUILayout.Label(MultiSceneLoc.LoadSubScenesDesc, EditorStyles.helpBox);
 
                     foreach (var entry in sceneConfig.config)
                     {
                         EditorGUILayout.Space(5);
-                        var buttonText = string.Format(Loc.LoadXScenes, entry.name);
+                        var buttonText = string.Format(MultiSceneLoc.LoadXScenes, entry.name);
                         if (GUILayout.Button(buttonText, GUILayout.MinHeight(100), GUILayout.Height(35)))
                         {
                             sceneConfig.LoadSceneConfig(entry, true);
                         }
                             
-                        GUILayout.Label(Loc.LoadOnlyScenes + entry.name + ".", EditorStyles.helpBox);
+                        GUILayout.Label(MultiSceneLoc.LoadOnlyScenes + entry.name + ".", EditorStyles.helpBox);
                     }
                 }
                 GUILayout.EndScrollView();
@@ -130,9 +130,9 @@ namespace PixelWizards.MultiScene
                 needToSave = true;
             }
 
-            if (GUILayout.Button("Save Changes", GUILayout.Height(35f)))
+            if (needToSave)
             {
-                if (needToSave)
+                if (GUILayout.Button("Save Changes", GUILayout.Height(35f)))
                 {
                     SaveChanges(serializedObject);
                 }
