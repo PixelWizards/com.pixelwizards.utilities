@@ -73,7 +73,7 @@ Components
 * SelectionBase - adds the [SelectionBase] attribute to a game object, ensuring that the top level object in a complex prefab is selected properly in scene view
 * SetTargetFramerate - calls Application.targetFramerate to specify the desired framerate for the game
 
-Scene view Keyboard Shortcuts
+Keyboard Shortcuts
 * CTRL+SHIFT+G - Create New Group (empty gameobject) from selected objects
 * CTRL+W - Toggle the lock icon on the active editor window
 * CTRL+E - Toggle the current window mouse over
