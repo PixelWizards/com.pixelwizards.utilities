@@ -7,6 +7,11 @@ Some useful Utility tools for Unity.
 
 Note: this repo uses Git LFS 
 
+Project Tracker
+--------------
+https://github.com/orgs/PixelWizards/projects/1/views/1
+
+
 Usage
 --------------
 
@@ -45,17 +50,38 @@ Content
 * Assets/Create/Scene Management/Multi-Scene Loader - multi scene loading system (see Samples for Runtime API usage as well!)
 * Assets/Texture Combiner - lets you pack texture channels (combine multiple maps for HDRP textures etc)
 * Assets/Find all References - find all references of a given object
-* Window/Analysis/ResourceChecker - shows resources loaded in a scene, very useful for optimizing builds
+* Assets/Batch Import - batch import a bunch of .unitypackages (including optional subfolders)
 * Edit/Distribute/Along X / Y / Z - distributes selected game objects in the scene
-* Edit/Physics Settler - allows you to activate physics in edit mode to 'drop' / settle objects dynamically
+* Edit/Settle Physics - allows you to activate physics in edit mode to 'drop' / settle objects dynamically
 * various other tools - 'Create GameObject at Root' etc
 * Edit/Find in Project
-* Edit/Group - create groups from gameobjects
+* Edit/Group - create groups from gameobjects (ctrl-shift-g)
 * Edit/Reset Parent Transform - if you have groups you want to reset the parent transform position 
 * Edit/Global Defines wizard - manage your .rsp files
 * Edit/Enable / Disable Gizmos
 * Edit/Replace Materials in object
 * Edit/Replace Selection - bulk replace objects in a scene
+* Tools/Text to TextMeshPro - converts legacy Text UGUI elements to a TextMeshPro UGUI text field
+* Window/Analysis/ResourceChecker - shows resources loaded in a scene, very useful for optimizing builds
+* Window/Analysis/Console Call Stack Helper - reformats an entry in the console to display the call stack properly
+* Window/Sequencing/Duplicate with Bindings - attempts to clone a timeline keeping it's bindings (experimental)
+* Window/Toggle Locks - 
+
+Components
+* EditorNote - add notes to objects in the editor (ignored in play mode) - useful to add visual tips in scene view
+* FreeCam - adds a free fly cam similar to the scene view (useful for debugging etc)
+* SelectionBase - adds the [SelectionBase] attribute to a game object, ensuring that the top level object in a complex prefab is selected properly in scene view
+* SetTargetFramerate - calls Application.targetFramerate to specify the desired framerate for the game
+
+Keyboard Shortcuts
+* CTRL+SHIFT+G - Create New Group (empty gameobject) from selected objects
+* CTRL+W - Toggle the lock icon on the active editor window
+* CTRL+E - Toggle the current window mouse over
+* CTRL+SHIFT+W - Toggle Lock all Editor Windows
+* Numpad 7 - Scene view Top 
+* Numpad 5 - Switch between ISO / Perspective View Scene View
+* Numpad 1 - Scene view Left
+* Numpad 3 - Scene view back
 
 ### Samples
 
