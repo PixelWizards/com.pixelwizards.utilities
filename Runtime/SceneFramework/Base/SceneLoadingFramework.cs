@@ -62,7 +62,14 @@ namespace PixelWizards.MultiScene
             Debug.Log("SceneLoadingFramework::Set active scene : " + thisScene);
 #endif
             var activeScene = SceneManager.GetSceneByName(thisScene);
-            SceneManager.SetActiveScene(activeScene);
+            if (activeScene.isLoaded)
+            {
+                SceneManager.SetActiveScene(activeScene);    
+            }
+            else
+            {
+                Debug.LogWarning("Scene: " + thisScene + " is not loaded, can't be made active?");
+            }
         }
 
         protected void UnloadScene(string sceneName)

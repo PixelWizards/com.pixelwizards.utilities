@@ -20,15 +20,11 @@ namespace PixelWizards.MultiScene
     [ExecuteAlways]
     public class MultiSceneSwapHelper : SceneLoadingFramework
     {
-        [Header("the scene config that this swap helper uses")]
         public MultiSceneLoader multiSceneConfig;
 
-        [Header("Load configs on Awake()?")]
         public bool loadConfigOnAwake = false;
-        [Header("Do Autoload in the Editor (not in play mode)?")]
         public bool autoLoadConfigInEditor = false;
 
-        [Header("List of configs that we want to load on Awake()")]
         public List<string> configList = new List<string>();
 
         // cache of configs that are currently loaded
@@ -165,9 +161,6 @@ namespace PixelWizards.MultiScene
                     callback?.Invoke(configName);
                 });
             }
-                
-            // if we get here, we didn't find the config
-            Debug.LogWarning("MultiSceneLoader::LoadConfig() - could not find config: " + configName);
         }
 
         /// <summary>
