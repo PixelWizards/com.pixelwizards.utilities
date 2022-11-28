@@ -141,6 +141,7 @@ namespace PixelWizards.Utilities
 			ResourceChecker window = (ResourceChecker)EditorWindow.GetWindow(typeof(ResourceChecker));
 			window.CheckResources();
 			window.minSize = new Vector2(MinWidth, 475);
+			window.titleContent = new GUIContent("Resource Checker");
 		}
 
 		void OnGUI()
