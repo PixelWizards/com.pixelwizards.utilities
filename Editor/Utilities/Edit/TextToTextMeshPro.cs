@@ -24,7 +24,7 @@ public class TextToTextMeshPro : Editor
         public bool RayCastTarget;
     }
 
-    [MenuItem("Tools/Text To TextMeshPro", false, 4000)]
+    [MenuItem("Edit/Text To TextMeshPro", false, 4000)]
     static void DoIt()
     {
         if (TMPro.TMP_Settings.defaultFontAsset == null)
@@ -33,9 +33,14 @@ public class TextToTextMeshPro : Editor
             return;
         }
 
+        // iterate through all of the children of the selection and convert them
         foreach (GameObject gameObject in Selection.gameObjects)
         {
-            ConvertTextToTextMeshPro(gameObject);
+            var childCount = gameObject.transform.childCount;
+            for (var i = 0; i < childCount; i++)
+            {
+                ConvertTextToTextMeshPro(gameObject.transform.GetChild(i).gameObject);   
+            }
         }
     }
 
