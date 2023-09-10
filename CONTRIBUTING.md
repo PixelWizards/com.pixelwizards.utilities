@@ -7,8 +7,8 @@
 * Please include the ticket ID in your commits (either Jira or Github issue)
 
 
-## All contributions are subject to the [Unity Contribution Agreement(UCA)](https://unity3d.com/legal/licenses/Unity_Contribution_Agreement)
-By making a pull request, you are confirming agreement to the terms and conditions of the UCA, including that your Contributions are your original creation and that you have complete right and authority to make your Contributions.
+## All contributions are subject to the [Package License](LICENSE.md)
+By making a pull request, you are confirming agreement to the terms and conditions of the license, including that your Contributions are your original creation and that you have complete right and authority to make your Contributions.
 
 ## Once you have a change ready following these ground rules.
 * Before submitting anything, please clean your history (squash, fix-up commits)
