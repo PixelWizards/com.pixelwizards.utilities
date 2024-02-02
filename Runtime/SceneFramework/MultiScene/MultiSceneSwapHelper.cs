@@ -1,4 +1,4 @@
-﻿#define USE_LOGGING
+﻿//#define USE_LOGGING
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +29,8 @@ namespace PixelWizards.MultiScene
 
         // cache of configs that are currently loaded
         private List<string> configCache = new List<string>();
+        
+        public static event Action<string> onMultiSceneLoaded;
 
         /// <summary>
         /// Added support for runtime 'on demand' loading - load one master scene that triggers a set of sub-scenes to be loaded if they aren't already
@@ -60,7 +62,7 @@ namespace PixelWizards.MultiScene
 					}
                 }
             }
-
+            
         }
 
         public void OnDisable()
@@ -158,6 +160,7 @@ namespace PixelWizards.MultiScene
             {
                 LoadSceneConfig(config, unloadExisting, useAsyncLoading, cb =>
                 {
+                    onMultiSceneLoaded?.Invoke(configName);
                     callback?.Invoke(configName);
                 });
             }
