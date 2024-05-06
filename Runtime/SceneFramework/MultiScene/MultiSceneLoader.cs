@@ -1,7 +1,7 @@
 ﻿//#define USE_LOGGING
 
-using PixelWizards.Utilities;
 using System.Collections.Generic;
+using PixelWizards.Utilities;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;

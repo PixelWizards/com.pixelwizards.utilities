@@ -1,4 +1,4 @@
-﻿#define USE_LOGGING
+﻿//#define USE_LOGGING
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +20,17 @@ namespace PixelWizards.MultiScene
     [ExecuteAlways]
     public class MultiSceneSwapHelper : SceneLoadingFramework
     {
-        [Header("the scene config that this swap helper uses")]
         public MultiSceneLoader multiSceneConfig;
 
-        [Header("Load configs on Awake()?")]
         public bool loadConfigOnAwake = false;
-        [Header("Do Autoload in the Editor (not in play mode)?")]
         public bool autoLoadConfigInEditor = false;
 
-        [Header("List of configs that we want to load on Awake()")]
         public List<string> configList = new List<string>();
 
         // cache of configs that are currently loaded
         private List<string> configCache = new List<string>();
+        
+        public static event Action<string> onMultiSceneLoaded;
 
         /// <summary>
         /// Added support for runtime 'on demand' loading - load one master scene that triggers a set of sub-scenes to be loaded if they aren't already
@@ -64,7 +62,7 @@ namespace PixelWizards.MultiScene
 					}
                 }
             }
-
+            
         }
 
         public void OnDisable()
@@ -162,12 +160,10 @@ namespace PixelWizards.MultiScene
             {
                 LoadSceneConfig(config, unloadExisting, useAsyncLoading, cb =>
                 {
+                    onMultiSceneLoaded?.Invoke(configName);
                     callback?.Invoke(configName);
                 });
             }
-                
-            // if we get here, we didn't find the config
-            Debug.LogWarning("MultiSceneLoader::LoadConfig() - could not find config: " + configName);
         }
 
         /// <summary>
