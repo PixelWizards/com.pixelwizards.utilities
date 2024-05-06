@@ -27,28 +27,44 @@ public class TextToTextMeshPro : Editor
     [MenuItem("Edit/Text To TextMeshPro", false, 4000)]
     static void DoIt()
     {
-        if (TMPro.TMP_Settings.defaultFontAsset == null)
+        if (TMP_Settings.defaultFontAsset == null)
         {
             EditorUtility.DisplayDialog("ERROR!", "Assign a default font asset in project settings!", "OK", "");
             return;
         }
 
-        // iterate through all of the children of the selection and convert them
-        foreach (GameObject gameObject in Selection.gameObjects)
+        foreach (var parent in Selection.gameObjects)
         {
-            var childCount = gameObject.transform.childCount;
-            for (var i = 0; i < childCount; i++)
-            {
-                ConvertTextToTextMeshPro(gameObject.transform.GetChild(i).gameObject);   
-            }
+            ConvertChildren(parent);
         }
     }
 
+    /// <summary>
+    /// Recursive function to convert all of the children of the initial object that is passed in
+    /// </summary>
+    /// <param name="parent"></param>
+    static void ConvertChildren(GameObject parent)
+    {
+        // iterate through all of the children of the selection and convert them
+        Debug.Log("Converting: " + parent.name);
+        var childCount = parent.transform.childCount;
+        for (var i = 0; i < childCount; i++)
+        {
+            var child = parent.transform.GetChild(i).gameObject;
+            Debug.Log("Converting: " + child.name);
+            ConvertTextToTextMeshPro(child);
+            ConvertChildren(child);
+        }
+    }
+    
     static void ConvertTextToTextMeshPro(GameObject target)
     {
         var settings = GetTextMeshProSettings(target);
         if (settings == null)
+        {
+            // no text component on this one, ignore
             return;
+        }
 
         try
         {
@@ -60,21 +76,21 @@ public class TextToTextMeshPro : Editor
             return;
         }
 
-        TextMeshProUGUI tmp = target.AddComponent<TextMeshProUGUI>();
-        tmp.enabled = settings.Enabled;
-        tmp.fontStyle = settings.FontStyle;
-        tmp.fontSize = settings.FontSize;
-        tmp.fontSizeMin = settings.FontSizeMin;
-        tmp.fontSizeMax = settings.FontSizeMax;
-        tmp.lineSpacing = settings.LineSpacing;
-        tmp.richText = settings.EnableRichText;
-        tmp.enableAutoSizing = settings.EnableAutoSizing;
-        tmp.alignment = settings.TextAlignmentOptions;
-        tmp.enableWordWrapping = settings.WrappingEnabled;
-        tmp.overflowMode = settings.TextOverflowModes;
-        tmp.text = settings.Text;
-        tmp.color = settings.Color;
-        tmp.raycastTarget = settings.RayCastTarget;
+        var tmp = target.AddComponent<TextMeshProUGUI>();
+            tmp.enabled = settings.Enabled;
+            tmp.fontStyle = settings.FontStyle;
+            tmp.fontSize = settings.FontSize;
+            tmp.fontSizeMin = settings.FontSizeMin;
+            tmp.fontSizeMax = settings.FontSizeMax;
+            tmp.lineSpacing = settings.LineSpacing;
+            tmp.richText = settings.EnableRichText;
+            tmp.enableAutoSizing = settings.EnableAutoSizing;
+            tmp.alignment = settings.TextAlignmentOptions;
+            tmp.enableWordWrapping = settings.WrappingEnabled;
+            tmp.overflowMode = settings.TextOverflowModes;
+            tmp.text = settings.Text;
+            tmp.color = settings.Color;
+            tmp.raycastTarget = settings.RayCastTarget;
     }
 
     static TextMeshProSettings GetTextMeshProSettings(GameObject gameObject)
@@ -82,7 +98,6 @@ public class TextToTextMeshPro : Editor
         Text uiText = gameObject.GetComponent<Text>();
         if (uiText == null)
         {
-            //EditorUtility.DisplayDialog("ERROR!", "You must select a Unity UI Text Object to convert.", "OK", "");
             return null;
         }
 

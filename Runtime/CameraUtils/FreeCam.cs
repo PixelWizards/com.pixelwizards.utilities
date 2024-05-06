@@ -49,63 +49,78 @@ public class FreeCam : MonoBehaviour
     /// </summary>
     private bool looking = false;
 
+    private bool fastMode = false;
+    private float desiredSpeed;
+    private Vector3 right;
+    private Vector3 up;
+    private Vector3 forward;
+    private Vector3 currentPosition;
+    private Vector3 currentRotation;
+    private float rotx, roty;
+    private float desiredZoom;
+
     void Update()
     {
-        var fastMode = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-        var movementSpeed = fastMode ? this.fastMovementSpeed : this.movementSpeed;
-
+        fastMode = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        desiredSpeed = fastMode ? this.fastMovementSpeed : this.movementSpeed;
+        right = transform.right;
+        up = transform.up;
+        forward = transform.forward;
+        currentRotation = transform.localEulerAngles;
+        
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.position = transform.position + (-transform.right * movementSpeed * Time.deltaTime);
+            currentPosition = currentPosition + (-right * desiredSpeed * Time.deltaTime);
         }
 
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
-            transform.position = transform.position + (transform.right * movementSpeed * Time.deltaTime);
+            currentPosition = currentPosition + (right * desiredSpeed * Time.deltaTime);
         }
 
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-            transform.position = transform.position + (transform.forward * movementSpeed * Time.deltaTime);
+            currentPosition = currentPosition + (forward * desiredSpeed * Time.deltaTime);
         }
 
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
-            transform.position = transform.position + (-transform.forward * movementSpeed * Time.deltaTime);
+            currentPosition = currentPosition + (-forward * desiredSpeed * Time.deltaTime);
         }
 
         if (Input.GetKey(KeyCode.Q))
         {
-            transform.position = transform.position + (-transform.up * movementSpeed * Time.deltaTime);
+            currentPosition = currentPosition + (-up * desiredSpeed * Time.deltaTime);
         }
 
         if (Input.GetKey(KeyCode.E))
         {
-            transform.position = transform.position + (transform.up * movementSpeed * Time.deltaTime);
+            currentPosition = currentPosition + (up * desiredSpeed * Time.deltaTime);
         }
 
         if (Input.GetKey(KeyCode.R) || Input.GetKey(KeyCode.PageUp))
         {
-            transform.position = transform.position + (Vector3.up * movementSpeed * Time.deltaTime);
+            currentPosition = currentPosition + (Vector3.up * movementSpeed * Time.deltaTime);
         }
 
         if (Input.GetKey(KeyCode.F) || Input.GetKey(KeyCode.PageDown))
         {
-            transform.position = transform.position + (-Vector3.up * movementSpeed * Time.deltaTime);
+            currentPosition = currentPosition + (-Vector3.up * movementSpeed * Time.deltaTime);
         }
+
 
         if (looking)
         {
-            float newRotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * freeLookSensitivity;
-            float newRotationY = transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * freeLookSensitivity;
-            transform.localEulerAngles = new Vector3(newRotationY, newRotationX, 0f);
+            rotx = currentRotation.y + Input.GetAxis("Mouse X") * freeLookSensitivity;
+            roty = currentRotation.x - Input.GetAxis("Mouse Y") * freeLookSensitivity;
+            currentRotation = new Vector3(roty, rotx, 0f);
         }
 
         float axis = Input.GetAxis("Mouse ScrollWheel");
         if (axis != 0)
         {
-            var zoomSensitivity = fastMode ? this.fastZoomSensitivity : this.zoomSensitivity;
-            transform.position = transform.position + transform.forward * axis * zoomSensitivity;
+            desiredZoom = fastMode ? this.fastZoomSensitivity : this.zoomSensitivity;
+            currentPosition = currentPosition + transform.forward * axis * desiredZoom;
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
@@ -116,6 +131,12 @@ public class FreeCam : MonoBehaviour
         {
             StopLooking();
         }
+    }
+
+    private void FixedUpdate()
+    {
+        transform.position = currentPosition;
+        transform.localEulerAngles = currentRotation;
     }
 
     void OnDisable()
