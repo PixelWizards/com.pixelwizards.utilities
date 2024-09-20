@@ -1,4 +1,4 @@
-﻿//#define USE_LOGGING
+﻿#define USE_LOGGING
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -133,6 +133,8 @@ namespace PixelWizards.MultiScene
 #endif
                             model.isLevelLoading = false;
                             model.levelLoading = string.Empty;
+                            // exit out of this
+                            yield break;
                         }
 
                         yield return null;
