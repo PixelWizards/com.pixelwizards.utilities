@@ -1,17 +1,14 @@
 {
   "name": "com.pixelwizards.utilities",
   "displayName": "Pixel Wizards - Utilities",
-  "version": "0.6.0-preview.1",
+  "version": "2.0.0-preview.1",
   "unity": "2018.4",
-  "description": "Editor tools for Unity Development",
+  "description": "",
+  "category": "",
   "author": {
     "name": "Pixel Wizards",
     "email": "support@pixelwizards.ca",
-    "url": "https://github.com/PixelWizards"
+    "url": "www.pixelwizards.ca"
   },
-  "keywords": [],
-  "dependencies": {
-    "com.unity.timeline": "1.2.13",
-    "com.unity.textmeshpro": "2.0.1"
-  }
+  "keywords": []
 }
