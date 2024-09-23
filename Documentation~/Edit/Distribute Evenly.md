@@ -8,11 +8,15 @@ The distribution tools allow you to do this.
 
 ## How do you use this
 
-### Distribute along X
+There are shortcuts that allow you to align objects along the X, Y or Z axis in the scene.
 
-### Distribute along Y
+Simply group select any number of objects and then press the keyboard short
 
-### Distribute along Z
+**Distribute along X** : 
+
+**Distribute along Y** : 
+
+**Distribute along Z** : 
 
 
 
