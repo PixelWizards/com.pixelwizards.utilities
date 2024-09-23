@@ -2,76 +2,79 @@
 using UnityEditor;
 using UnityEngine.Playables;
 
-public class DuplicateTimeline
+namespace PixelWizards.Utilities
 {
-    [MenuItem("Window/Sequencing/Duplicate With Bindings", true)]
-    public static bool DuplicateWithBindingsValidate()
+    public class DuplicateTimeline
     {
-        if (UnityEditor.Selection.activeGameObject == null)
-            return false;
-
-        var playableDirector = UnityEditor.Selection.activeGameObject.GetComponent<PlayableDirector>();
-        if (playableDirector == null)
-            return false;
-
-        var playableAsset = playableDirector.playableAsset;
-        if (playableAsset == null)
-            return false;
-
-        var path = AssetDatabase.GetAssetPath(playableAsset);
-        if (string.IsNullOrEmpty(path))
-            return false;
-
-        return true;
-    }
-
-    [MenuItem("Window/Sequencing/Duplicate With Bindings")]
-    public static void DuplicateWithBindings()
-    {
-        if (UnityEditor.Selection.activeGameObject == null)
-            return;
-
-        var playableDirector = UnityEditor.Selection.activeGameObject.GetComponent<PlayableDirector>();
-        if (playableDirector == null)
-            return;
-
-        var playableAsset = playableDirector.playableAsset;
-        if (playableAsset == null)
-            return;
-
-        var path = AssetDatabase.GetAssetPath(playableAsset);
-        if (string.IsNullOrEmpty(path))
-            return;
-
-        string newPath = path.Replace(".", "(Clone).");
-        if (!AssetDatabase.CopyAsset(path, newPath))
+        [MenuItem("Window/Sequencing/Duplicate With Bindings", true)]
+        public static bool DuplicateWithBindingsValidate()
         {
-            Debug.LogError("Couldn't Clone Asset");
-            return;
+            if (UnityEditor.Selection.activeGameObject == null)
+                return false;
+
+            var playableDirector = UnityEditor.Selection.activeGameObject.GetComponent<PlayableDirector>();
+            if (playableDirector == null)
+                return false;
+
+            var playableAsset = playableDirector.playableAsset;
+            if (playableAsset == null)
+                return false;
+
+            var path = AssetDatabase.GetAssetPath(playableAsset);
+            if (string.IsNullOrEmpty(path))
+                return false;
+
+            return true;
         }
 
-        var newPlayableAsset = AssetDatabase.LoadMainAssetAtPath(newPath) as PlayableAsset;
-        var gameObject = GameObject.Instantiate(UnityEditor.Selection.activeGameObject);
-        var newPlayableDirector = gameObject.GetComponent<PlayableDirector>();
-        newPlayableDirector.playableAsset = newPlayableAsset;
-
-        var oldBindings = playableAsset.outputs.GetEnumerator();
-        var newBindings = newPlayableAsset.outputs.GetEnumerator();
-
-
-        while (oldBindings.MoveNext())
+        [MenuItem("Window/Sequencing/Duplicate With Bindings")]
+        public static void DuplicateWithBindings()
         {
-            var oldBindings_sourceObject = oldBindings.Current.sourceObject;
+            if (UnityEditor.Selection.activeGameObject == null)
+                return;
 
-            newBindings.MoveNext();
+            var playableDirector = UnityEditor.Selection.activeGameObject.GetComponent<PlayableDirector>();
+            if (playableDirector == null)
+                return;
 
-            var newBindings_sourceObject = newBindings.Current.sourceObject;
+            var playableAsset = playableDirector.playableAsset;
+            if (playableAsset == null)
+                return;
+
+            var path = AssetDatabase.GetAssetPath(playableAsset);
+            if (string.IsNullOrEmpty(path))
+                return;
+
+            string newPath = path.Replace(".", "(Clone).");
+            if (!AssetDatabase.CopyAsset(path, newPath))
+            {
+                Debug.LogError("Couldn't Clone Asset");
+                return;
+            }
+
+            var newPlayableAsset = AssetDatabase.LoadMainAssetAtPath(newPath) as PlayableAsset;
+            var gameObject = GameObject.Instantiate(UnityEditor.Selection.activeGameObject);
+            var newPlayableDirector = gameObject.GetComponent<PlayableDirector>();
+            newPlayableDirector.playableAsset = newPlayableAsset;
+
+            var oldBindings = playableAsset.outputs.GetEnumerator();
+            var newBindings = newPlayableAsset.outputs.GetEnumerator();
 
 
-            newPlayableDirector.SetGenericBinding(
-                newBindings_sourceObject,
-                playableDirector.GetGenericBinding(oldBindings_sourceObject)
-            );
+            while (oldBindings.MoveNext())
+            {
+                var oldBindings_sourceObject = oldBindings.Current.sourceObject;
+
+                newBindings.MoveNext();
+
+                var newBindings_sourceObject = newBindings.Current.sourceObject;
+
+
+                newPlayableDirector.SetGenericBinding(
+                    newBindings_sourceObject,
+                    playableDirector.GetGenericBinding(oldBindings_sourceObject)
+                );
+            }
         }
     }
 }

@@ -9,6 +9,5 @@
 -  [Batch Extract Materials](Batch Extract Materials.md) 
 -  [Batch Import UnityPackage files](Batch Import UnityPackage files) 
 - [Find Reference](Find Reference.md) 
-- [Global Defines Wizard](Global Defines Wizard.md) 
 - [Simple Texture Combiner](Simple Texture Combiner.md) 
 

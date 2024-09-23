@@ -1,10 +1,10 @@
 # Overview
 
+The Pixel Wizards Utilities package is a collection of useful tools, utilities and commands that are designed to improve the experience of working with / in the Unity Editor.
 
+## Supported Versions
 
-# What is Included
-
-
+The package is designed to work with any supported LTS version of Unity (as of this writing, Unity 2021 LTS and higher).
 
 # Documentation
 
@@ -12,6 +12,7 @@
 
 - [Create Empty at Root](Create Empty at Root.md) 
 -  [Distribute Evenly](Distribute Evenly.md) 
+-  [Global Defines Wizard](Edit/Global Defines Wizard.md) 
 -  [Lock Toggle](Lock Toggle.md) 
 -  [Physics Settler](Physics Settler.md) 
 - [Replace Material in Children](Replace Material in Children.md) 
@@ -29,7 +30,6 @@
 - [Batch Extract Materials](Batch Extract Materials.md) 
 - [Batch Import UnityPackage files](Batch Import UnityPackage files) 
 - [Find Reference](Find Reference.md) 
-- [Global Defines Wizard](Global Defines Wizard.md) 
 - [Simple Texture Combiner](Simple Texture Combiner.md) 
 
 ##  [Window Utilities](Window\index.md) 

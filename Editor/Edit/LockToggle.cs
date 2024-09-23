@@ -20,31 +20,20 @@ namespace PixelWizards.Utilities
 {
     public static class LockToggle
     {
-#if UNITY_2019_1_OR_NEWER
         [Shortcut("Window/Toggle Lock Focused Window", KeyCode.W, ShortcutModifiers.Action)]
-#else
-        [MenuItem("Window/Pump Editor/Tools/Toggle Lock Focused Window %w")]
-#endif
         private static void ToggleLockFocusedWindow()
         {
             ToggleLockEditorWindow(EditorWindow.focusedWindow);
         }
 
-#if UNITY_2019_1_OR_NEWER
+
         [Shortcut("Window/Toggle Lock Mouse Over Window", KeyCode.E, ShortcutModifiers.Action)]
-#else
-        [MenuItem("Window/Pump Editor/Tools/Toggle Lock Mouse Over Window %e")]
-#endif
         private static void ToggleLockMouseOverWindow()
         {
             ToggleLockEditorWindow(EditorWindow.mouseOverWindow);
         }
 
-#if UNITY_2019_1_OR_NEWER
         [Shortcut("Window/Toggle Lock All Windows", KeyCode.W, ShortcutModifiers.Action | ShortcutModifiers.Shift)]
-#else
-        [MenuItem("Window/Pump Editor/Tools/Toggle Lock All Windows %#w")]
-#endif
         private static void ToggleLockAllWindows()
         {
             var allWindows = Resources.FindObjectsOfTypeAll<EditorWindow>();
