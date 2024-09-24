@@ -23,22 +23,22 @@ The package is designed to work with any supported LTS version of Unity (as of t
 
 ## [Assets Utilities](Assets\index.md)
 
-- [Cleanup](Cleanup.md) 
-  -  [FindMissingScripts](Cleanup\FindMissingScripts.md) 
-  -  [Remove Empty Folders](Cleanup\Remove Empty Folders.md) 
-  -  [Unity GUID Regenerator](Cleanup\Unity GUID Regenerator.md) 
-- [Batch Extract Materials](Batch Extract Materials.md) 
-- [Batch Import UnityPackage files](Batch Import UnityPackage files) 
-- [Find Reference](Find Reference.md) 
+- [Cleanup](Assets/Cleanup.md) 
+  -  [FindMissingScripts](Assets/Cleanup/FindMissingScripts.md) 
+  -  [Remove Empty Folders](Assets/Cleanup/RemoveEmptyFolders.md) 
+  -  [Unity GUID Regenerator](Assets/Cleanup/UnityGUIDRegenerator.md) 
+- [Batch Extract Materials](Assets/BatchExtractMaterials.md) 
+- [Batch Import UnityPackage files](Assets/BatchImportUnityPackage.md) 
+- [Find Reference](Assets/FindReference.md) 
 - [Simple Texture Combiner](Simple Texture Combiner.md) 
 
 ##  [Window Utilities](Window\index.md) 
 
 - Analysis
-  -  [Console Callstack Helper](Analysis\Console Callstack Helper.md) 
-  -  [Resource Checker](Analysis\Resource Checker.md) 
+  -  [Console Callstack Helper](Window/Analysis/ConsoleCallstackHelper.md) 
+  -  [Resource Checker](Window/Analysis/ResourceChecker.md) 
 - Sequencer
-  -  [Duplicate Timeline (with Binding)](Sequencer\Duplicate Timeline (with Binding).md) 
+  -  [Duplicate Timeline (with Binding)](Window/Sequencer/DuplicateTimeline.md) 
 
 
 
