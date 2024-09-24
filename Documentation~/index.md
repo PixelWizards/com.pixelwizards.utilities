@@ -10,7 +10,7 @@ The package is designed to work with any supported LTS version of Unity (as of t
 
 ##  [Edit Utilities](Edit\index.md) 
 
-- [Create Empty at Root](Create Empty at Root.md) 
+- [Create Empty at Root](Edit/Create Empty at Root.md) 
 -  [Distribute Evenly](Distribute Evenly.md) 
 -  [Global Defines Wizard](Edit/Global Defines Wizard.md) 
 -  [Lock Toggle](Lock Toggle.md) 
