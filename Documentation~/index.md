@@ -10,16 +10,16 @@ The package is designed to work with any supported LTS version of Unity (as of t
 
 ##  [Edit Utilities](Edit\index.md) 
 
-- [Create Empty at Root](Create Empty at Root.md) 
--  [Distribute Evenly](Distribute Evenly.md) 
--  [Global Defines Wizard](Edit/Global Defines Wizard.md) 
--  [Lock Toggle](Lock Toggle.md) 
--  [Physics Settler](Physics Settler.md) 
-- [Replace Material in Children](Replace Material in Children.md) 
--  [Replace Selection (Window)](Replace Selection (Window).md) 
--  [Assorted Shortcuts](Assorted Shortcuts.md) 
--  [Sort Scene Hierarchy](Sort Scene Hierarchy.md) 
--  [Text to Text Mesh Pro (Converter)](Text to Text Mesh Pro (Converter).md) 
+-  [Assorted Shortcuts](Edit/AssortedShortcuts.md) 
+-  [Create Empty at Root](Edit/CreateEmptyatRoot.md) 
+-  [Distribute Evenly](Edit/Distribute Evenly.md) 
+-  [Global Defines Wizard](Edit/GlobalDefinesWizard.md) 
+-  [Lock Toggle](Edit/LockToggle.md) 
+-  [Physics Settler](Edit/PhysicsSettler.md) 
+-  [Replace Material in Children](Edit/ReplaceMaterialinChildren.md) 
+-  [Replace Selection (Window)](Edit/ReplaceSelection.md) 
+-  [Sort Scene Hierarchy](Edit/SortSceneHierarchy.md) 
+-  [Text to Text Mesh Pro (Converter)](Edit/TexttoTextMeshPro.md) 
 
 ## [Assets Utilities](Assets\index.md)
 
