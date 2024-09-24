@@ -53,3 +53,5 @@ The top buttons let you alternately specify whether you want to 'extract' all of
 As you can see from the image above, you can also modify individual materials in the list if you so choose (so if the system wants to 'remap' a material you could choose to 'extract' it to a unique material for example).
 
 Once you are happy with the intended results, simply click 'Extract!' and the system will run the operation, or hit 'Back' if you want to change settings on a prior screen.
+
+That's it! The materials will be extracted into the folder you specified!
