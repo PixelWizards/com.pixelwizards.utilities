@@ -30,7 +30,7 @@ The package is designed to work with any supported LTS version of Unity (as of t
 - [Batch Extract Materials](Assets/BatchExtractMaterials.md) 
 - [Batch Import UnityPackage files](Assets/BatchImportUnityPackage.md) 
 - [Find Reference](Assets/FindReference.md) 
-- [Simple Texture Combiner](Simple Texture Combiner.md) 
+- [Simple Texture Combiner](Assets/SimpleTextureCombiner.md) 
 
 ##  [Window Utilities](Window\index.md) 
 
