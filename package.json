@@ -3,12 +3,24 @@
   "displayName": "Pixel Wizards - Utilities",
   "version": "2.0.0-preview.1",
   "unity": "2018.4",
-  "description": "",
-  "category": "",
+  "description": "A collection of quality of life utilities for Unity developers",
+  "category": "Editor",
   "author": {
     "name": "Pixel Wizards",
     "email": "support@pixelwizards.ca",
     "url": "www.pixelwizards.ca"
   },
-  "keywords": []
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.9"
+  },
+  "keywords": [
+    "Editor",
+    "Utilities",
+    "Quality of Life"
+  ],
+  "documentationUrl": "https://github.com/PixelWizards/com.pixelwizards.utilities/blob/main/Documentation~/index.md",
+  "repository": {
+    "url": "git@github.com:PixelWizards/com.pixelwizards.utilities.git",
+    "type": "git"
+  }
 }
