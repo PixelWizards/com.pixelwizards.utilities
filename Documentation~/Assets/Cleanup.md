@@ -7,6 +7,6 @@ This sub section represents the menu items located under the ***/Assets/Cleanup*
 ## Sub Pages
 
 - [Find (and Remove) Missing Scripts](Cleanup\FindMissingScripts.md) (and remove)
-- [Remove Empty Folders](Cleanup\Remove Empty Folders.md) 
-- [Unity GUID Regenerator](Cleanup\Unity GUID Regenerator.md) 
+- [Remove Empty Folders](Cleanup\RemoveEmptyFolders.md) 
+- [Unity GUID Regenerator](Cleanup\UnityGUIDRegenerator.md) 
 
