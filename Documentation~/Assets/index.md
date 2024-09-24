@@ -1,5 +1,8 @@
 # Asset Utilities
 
+##Overview
+This sub section represents the menu items located under the /Assets menu.
+
 ## Sub Pages
 - [Cleanup](Cleanup.md) 
   -  [FindMissingScripts](Cleanup/FindMissingScripts.md) 
