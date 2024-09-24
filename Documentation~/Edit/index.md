@@ -2,14 +2,14 @@
 
 ## Sub Pages
 
-- [Assorted Shortcuts](Assorted Shortcuts.md) 
-- [Create Empty at Root](Create Empty at Root.md) 
--  [Distribute Evenly](Distribute Evenly.md) 
--  [Global Defines Wizard](Global Defines Wizard.md) 
--  [Lock Toggle](Lock Toggle.md) 
--  [Physics Settler](Physics Settler.md) 
-- [Replace Material in Children](Replace Material in Children.md) 
--  [Replace Selection (Window)](Replace Selection (Window).md) 
--  [Sort Scene Hierarchy](Sort Scene Hierarchy.md) 
--  [Text to Text Mesh Pro (Converter)](Text to Text Mesh Pro (Converter).md) 
+- [Assorted Shortcuts](AssortedShortcuts.md) 
+- [Create Empty at Root](CreateEmptyatRoot.md) 
+-  [Distribute Evenly](DistributeEvenly.md) 
+-  [Global Defines Wizard](GlobalDefinesWizard.md) 
+-  [Lock Toggle](LockToggle.md) 
+-  [Physics Settler](PhysicsSettler.md) 
+- [Replace Material in Children](ReplaceMaterialinChildren.md) 
+-  [Replace Selection (Window)](ReplaceSelection.md) 
+-  [Sort Scene Hierarchy](SortSceneHierarchy.md) 
+-  [Text to Text Mesh Pro (Converter)](TexttoTextMeshPro.md) 
 
