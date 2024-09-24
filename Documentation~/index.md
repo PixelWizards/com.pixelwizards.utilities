@@ -12,7 +12,7 @@ The package is designed to work with any supported LTS version of Unity (as of t
 
 -  [Assorted Shortcuts](Edit/AssortedShortcuts.md) 
 -  [Create Empty at Root](Edit/CreateEmptyatRoot.md) 
--  [Distribute Evenly](Edit/Distribute Evenly.md) 
+-  [Distribute Evenly](Edit/DistributeEvenly.md) 
 -  [Global Defines Wizard](Edit/GlobalDefinesWizard.md) 
 -  [Lock Toggle](Edit/LockToggle.md) 
 -  [Physics Settler](Edit/PhysicsSettler.md) 
