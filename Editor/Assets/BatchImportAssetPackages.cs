@@ -4,50 +4,53 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-public class BatchImportAssetPackages : ScriptableWizard
+namespace PixelWizards.Utilities
 {
-    public string packagePath = "";
-    public bool includeSubdirectories = false;
-
-    [MenuItem("Assets/Batch Import")]
-    static void CreateWizard()
+    public class BatchImportAssetPackages : ScriptableWizard
     {
-        var wizard = ScriptableWizard.DisplayWizard("Batch Import Packages", typeof(BatchImportAssetPackages));
-        wizard.createButtonName = "Import";
-        wizard.helpString = "Allows you to batch import .unitypackages from the specified folder, optionally including sub-folders";
-    }
+        public string packagePath = "";
+        public bool includeSubdirectories = false;
 
-    void OnWizardCreate()
-    {
-        packagePath = packagePath.Replace("\\", "/") + "/";
-        List<string> allFilePaths = new List<string>();
+        [MenuItem("Assets/Batch Import")]
+        static void CreateWizard()
+        {
+            var wizard = ScriptableWizard.DisplayWizard("Batch Import Packages", typeof(BatchImportAssetPackages));
+            wizard.createButtonName = "Import";
+            wizard.helpString = "Allows you to batch import .unitypackages from the specified folder, optionally including sub-folders";
+        }
 
-        if ( includeSubdirectories)
+        void OnWizardCreate()
         {
-            allFilePaths = Directory.GetFiles(Path.GetDirectoryName(packagePath), "*.unitypackage", SearchOption.AllDirectories).ToList();
-        }
-        else
-        {
-            allFilePaths = Directory.GetFiles(Path.GetDirectoryName(packagePath), "*.unitypackage", SearchOption.TopDirectoryOnly).ToList();
-        }
+            packagePath = packagePath.Replace("\\", "/") + "/";
+            List<string> allFilePaths = new List<string>();
+
+            if ( includeSubdirectories)
+            {
+                allFilePaths = Directory.GetFiles(Path.GetDirectoryName(packagePath), "*.unitypackage", SearchOption.AllDirectories).ToList();
+            }
+            else
+            {
+                allFilePaths = Directory.GetFiles(Path.GetDirectoryName(packagePath), "*.unitypackage", SearchOption.TopDirectoryOnly).ToList();
+            }
         
 
-        try
-        {
-            Debug.Log("Batch Importing Packages: Found " + allFilePaths.Count + " packages...");
-            foreach (string curPath in allFilePaths)
+            try
             {
-                string fileToImport = curPath.Replace("\\", "/");
-                if (Path.GetExtension(fileToImport).ToLower() == ".unitypackage")
+                Debug.Log("Batch Importing Packages: Found " + allFilePaths.Count + " packages...");
+                foreach (string curPath in allFilePaths)
                 {
-                    Debug.Log("Importing: " + fileToImport);
-                    AssetDatabase.ImportPackage(fileToImport, false);
+                    string fileToImport = curPath.Replace("\\", "/");
+                    if (Path.GetExtension(fileToImport).ToLower() == ".unitypackage")
+                    {
+                        Debug.Log("Importing: " + fileToImport);
+                        AssetDatabase.ImportPackage(fileToImport, false);
+                    }
                 }
             }
-        }
-        catch (System.Exception ex)
-        {
-            Debug.Log("Error: " + ex.Message);
+            catch (System.Exception ex)
+            {
+                Debug.Log("Error: " + ex.Message);
+            }
         }
     }
 }

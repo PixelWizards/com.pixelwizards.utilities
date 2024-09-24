@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEngine;
 
 namespace PixelWizards.Utilities
 {
@@ -16,11 +17,13 @@ namespace PixelWizards.Utilities
             {
                 try
                 {
+                    Debug.Log("****** STARTING GUID REGENERATION ******");
                     AssetDatabase.StartAssetEditing();
 
                     string path = Path.GetFullPath(".") + Path.DirectorySeparatorChar + "Assets";
                     UnityGuidRegenerator regenerator = new UnityGuidRegenerator(path);
                     regenerator.RegenerateGuids();
+                    Debug.Log("****** GUID REGENERATION COMPLETE ******");
                 }
                 finally
                 {
@@ -132,6 +135,8 @@ namespace PixelWizards.Utilities
                 }
                 File.WriteAllText(filePath, contents);
             }
+            
+            Debug.Log("Regenerated: " + guidsInFileMap.Count + " GUIDS...");
 
             EditorUtility.ClearProgressBar();
         }

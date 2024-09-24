@@ -89,10 +89,7 @@ namespace PixelWizards.Utilities
             CenterOnChildren();
         }
 
-        [MenuItem("Edit/Group/Center Group on Children", false, 5)]
-#if UNITY_2019_1_OR_NEWER
         [Shortcut("Edit/Group/Center Group on Children", KeyCode.G, ShortcutModifiers.Alt)]
-#endif
         public static void CenterOnChildren()
         {
             foreach (Transform root in Selection.GetFiltered(typeof(Transform), SelectionMode.TopLevel | SelectionMode.ExcludePrefab | SelectionMode.Editable))

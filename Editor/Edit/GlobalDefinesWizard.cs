@@ -16,7 +16,6 @@ namespace PixelWizards.Utilities
             public string define;
             public bool enabled;
 
-
             public GlobalDefine( )
             { }
 
