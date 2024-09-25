@@ -8,7 +8,7 @@ The package is designed to work with any supported LTS version of Unity (as of t
 
 # Documentation
 
-##  [Edit Utilities](Edit\index.md) 
+##  [Edit Utilities](Edit/index.md) 
 
 -  [Assorted Shortcuts](Edit/AssortedShortcuts.md) 
 -  [Create Empty at Root](Edit/CreateEmptyatRoot.md) 
@@ -21,7 +21,7 @@ The package is designed to work with any supported LTS version of Unity (as of t
 -  [Sort Scene Hierarchy](Edit/SortSceneHierarchy.md) 
 -  [Text to Text Mesh Pro (Converter)](Edit/TexttoTextMeshPro.md) 
 
-## [Assets Utilities](Assets\index.md)
+## [Assets Utilities](Assets/index.md)
 
 - [Cleanup](Assets/Cleanup.md) 
   -  [FindMissingScripts](Assets/Cleanup/FindMissingScripts.md) 
@@ -32,7 +32,7 @@ The package is designed to work with any supported LTS version of Unity (as of t
 - [Find Reference](Assets/FindReference.md) 
 - [Simple Texture Combiner](Assets/SimpleTextureCombiner.md) 
 
-##  [Window Utilities](Window\index.md) 
+##  [Window Utilities](Window/index.md) 
 
 - Analysis
   -  [Console Callstack Helper](Window/Analysis/ConsoleCallstackHelper.md) 
