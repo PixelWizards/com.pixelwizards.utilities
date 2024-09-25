@@ -13,7 +13,7 @@ This package should work with any LTS version of Unity (currently Unity 2021 and
 
 # Documentation
 
-Read the  [Documentation](Documentation~\index.md)  for information on all of the individual utilities included in the package.
+Read the  [Documentation](Documentation~/index.md)  for information on all of the individual utilities included in the package.
 
 # FAQ
 
