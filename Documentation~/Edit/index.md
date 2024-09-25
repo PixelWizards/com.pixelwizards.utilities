@@ -1,5 +1,8 @@
 # Edit Utilities
 
+## Overview
+This sub section represents the utilities located under the /Edit menu.
+
 ## Sub Pages
 
 - [Assorted Shortcuts](AssortedShortcuts.md) 
