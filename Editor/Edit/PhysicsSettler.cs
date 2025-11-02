@@ -49,7 +49,7 @@ namespace PixelWizards.Utilities
                 active = true;
 
                 // Normally avoid Find functions, but this is editor time and only happens once
-                workList = Object.FindObjectsOfType<Rigidbody>();
+                workList = (Rigidbody[])Object.FindObjectsByType(typeof(Rigidbody), FindObjectsSortMode.None);
 
                 // we will need to ensure autoSimulation is off to manually tick physics
                 cachedAutoSimulation = Physics.simulationMode;

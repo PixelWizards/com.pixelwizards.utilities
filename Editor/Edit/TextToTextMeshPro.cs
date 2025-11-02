@@ -19,7 +19,6 @@ namespace PixelWizards.Utilities
             public bool EnableRichText;
             public bool EnableAutoSizing;
             public TextAlignmentOptions TextAlignmentOptions;
-            public bool WrappingEnabled;
             public TextOverflowModes TextOverflowModes;
             public string Text;
             public Color Color;
@@ -27,7 +26,7 @@ namespace PixelWizards.Utilities
         }
 
         [MenuItem("Edit/Text To TextMeshPro", false, 4000)]
-        static void DoIt()
+        private static void DoIt()
         {
             if (TMP_Settings.defaultFontAsset == null)
             {
@@ -45,7 +44,7 @@ namespace PixelWizards.Utilities
         /// Recursive function to convert all of the children of the initial object that is passed in
         /// </summary>
         /// <param name="parent"></param>
-        static void ConvertChildren(GameObject parent)
+        private static void ConvertChildren(GameObject parent)
         {
             // iterate through all of the children of the selection and convert them
             Debug.Log("Converting: " + parent.name);
@@ -59,7 +58,7 @@ namespace PixelWizards.Utilities
             }
         }
     
-        static void ConvertTextToTextMeshPro(GameObject target)
+        private static void ConvertTextToTextMeshPro(GameObject target)
         {
             var settings = GetTextMeshProSettings(target);
             if (settings == null)
@@ -88,16 +87,15 @@ namespace PixelWizards.Utilities
             tmp.richText = settings.EnableRichText;
             tmp.enableAutoSizing = settings.EnableAutoSizing;
             tmp.alignment = settings.TextAlignmentOptions;
-            tmp.enableWordWrapping = settings.WrappingEnabled;
             tmp.overflowMode = settings.TextOverflowModes;
             tmp.text = settings.Text;
             tmp.color = settings.Color;
             tmp.raycastTarget = settings.RayCastTarget;
         }
 
-        static TextMeshProSettings GetTextMeshProSettings(GameObject gameObject)
+        private static TextMeshProSettings GetTextMeshProSettings(GameObject gameObject)
         {
-            Text uiText = gameObject.GetComponent<Text>();
+            var uiText = gameObject.GetComponent<Text>();
             if (uiText == null)
             {
                 return null;
@@ -114,7 +112,6 @@ namespace PixelWizards.Utilities
                 EnableRichText = uiText.supportRichText,
                 EnableAutoSizing = uiText.resizeTextForBestFit,
                 TextAlignmentOptions = TextAnchorToTextAlignmentOptions(uiText.alignment),
-                WrappingEnabled = HorizontalWrapModeToBool(uiText.horizontalOverflow),
                 TextOverflowModes = VerticalWrapModeToTextOverflowModes(uiText.verticalOverflow),
                 Text = uiText.text,
                 Color = uiText.color,
