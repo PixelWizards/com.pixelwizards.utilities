@@ -138,7 +138,7 @@ namespace PixelWizards.Utilities
 
                 EditorGUILayout.HelpBox($"Estimated Total Size: {totalSizeMB:F2} MB\nEstimated Time: {estimatedTime:F1} seconds", MessageType.Info);
 
-                previewScrollPos = EditorGUILayout.BeginScrollView(previewScrollPos, GUILayout.Height(150));
+                previewScrollPos = EditorGUILayout.BeginScrollView(previewScrollPos, GUILayout.ExpandHeight(true));
                 for (int i = previewPackages.Count - 1; i >= 0; i--)
                 {
                     var file = previewPackages[i];
