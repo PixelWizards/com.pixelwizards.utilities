@@ -1,4 +1,5 @@
 ﻿// Resource Checker
+// (c) 2020 Gekido https://www.gitub.com/gekidoslair
 // (c) 2012 Simon Oliver / HandCircus / hello@handcircus.com
 // (c) 2015 Brice Clocher / Mangatome / hello@mangatome.net
 // Public domain, do with whatever you like, commercial or not
@@ -136,15 +137,15 @@ namespace PixelWizards.Utilities
 		bool collectedInPlayingMode;
 
 		[MenuItem("Window/Analysis/Resource Checker")]
-		static void Init()
+		private static void Init()
 		{
-			ResourceChecker window = (ResourceChecker)EditorWindow.GetWindow(typeof(ResourceChecker));
+			var window = (ResourceChecker)GetWindow(typeof(ResourceChecker));
 			window.CheckResources();
 			window.minSize = new Vector2(MinWidth, 475);
 			window.titleContent = new GUIContent("Resource Checker");
 		}
 
-		void OnGUI()
+		private void OnGUI()
 		{
 			defColor = GUI.color;
 			IncludeDisabledObjects = GUILayout.Toggle(IncludeDisabledObjects, "Include disabled objects", GUILayout.Width(300));
@@ -156,9 +157,14 @@ namespace PixelWizards.Utilities
 			GUI.color = defColor;
 			GUILayout.BeginArea(new Rect(position.width - 85, 5, 100, 65));
 			if (GUILayout.Button("Calculate", GUILayout.Width(80), GUILayout.Height(40)))
+			{
 				CheckResources();
+			}
+
 			if (GUILayout.Button("CleanUp", GUILayout.Width(80), GUILayout.Height(20)))
+			{
 				Resources.UnloadUnusedAssets();
+			}
 			GUILayout.EndArea();
 			RemoveDestroyedResources();
 
@@ -243,7 +249,7 @@ namespace PixelWizards.Utilities
 			foreach (MeshDetails tMeshDetails in ActiveMeshDetails) TotalMeshVertices += tMeshDetails.mesh.vertexCount;
 		}
 
-		int GetBitsPerPixel(TextureFormat format)
+		private int GetBitsPerPixel(TextureFormat format)
 		{
 			switch (format)
 			{
@@ -265,46 +271,29 @@ namespace PixelWizards.Utilities
 					return 4;
 				case TextureFormat.DXT5:    // Compressed color with alpha channel texture format.
 					return 8;
-				/*
-				case TextureFormat.WiiI4:	// Wii texture format.
-				case TextureFormat.WiiI8:	// Wii texture format. Intensity 8 bit.
-				case TextureFormat.WiiIA4:	// Wii texture format. Intensity + Alpha 8 bit (4 + 4).
-				case TextureFormat.WiiIA8:	// Wii texture format. Intensity + Alpha 16 bit (8 + 8).
-				case TextureFormat.WiiRGB565:	// Wii texture format. RGB 16 bit (565).
-				case TextureFormat.WiiRGB5A3:	// Wii texture format. RGBA 16 bit (4443).
-				case TextureFormat.WiiRGBA8:	// Wii texture format. RGBA 32 bit (8888).
-				case TextureFormat.WiiCMPR:	//	 Compressed Wii texture format. 4 bits/texel, ~RGB8A1 (Outline alpha is not currently supported).
-					return 0;  //Not supported yet
-				*/
-				case TextureFormat.PVRTC_RGB2://	 PowerVR (iOS) 2 bits/pixel compressed color texture format.
-					return 2;
-				case TextureFormat.PVRTC_RGBA2://	 PowerVR (iOS) 2 bits/pixel compressed with alpha channel texture format
-					return 2;
-				case TextureFormat.PVRTC_RGB4://	 PowerVR (iOS) 4 bits/pixel compressed color texture format.
-					return 4;
-				case TextureFormat.PVRTC_RGBA4://	 PowerVR (iOS) 4 bits/pixel compressed with alpha channel texture format
-					return 4;
+				// deprecated
+				// case TextureFormat.PVRTC_RGB2://	 PowerVR (iOS) 2 bits/pixel compressed color texture format.
+				// 	return 2;
+				// case TextureFormat.PVRTC_RGBA2://	 PowerVR (iOS) 2 bits/pixel compressed with alpha channel texture format
+				// 	return 2;
+				// case TextureFormat.PVRTC_RGB4://	 PowerVR (iOS) 4 bits/pixel compressed color texture format.
+				// 	return 4;
+				// case TextureFormat.PVRTC_RGBA4://	 PowerVR (iOS) 4 bits/pixel compressed with alpha channel texture format
+				// 	return 4;
 				case TextureFormat.ETC_RGB4://	 ETC (GLES2.0) 4 bits/pixel compressed RGB texture format.
 					return 4;
 				case TextureFormat.ETC2_RGBA8://	 ATC (ATITC) 8 bits/pixel compressed RGB texture format.
 					return 8;
 				case TextureFormat.BGRA32://	 Format returned by iPhone camera
 					return 32;
-#if !UNITY_5 && !UNITY_5_3_OR_NEWER
-			case TextureFormat.ATF_RGB_DXT1://	 Flash-specific RGB DXT1 compressed color texture format.
-			case TextureFormat.ATF_RGBA_JPG://	 Flash-specific RGBA JPG-compressed color texture format.
-			case TextureFormat.ATF_RGB_JPG://	 Flash-specific RGB JPG-compressed color texture format.
-				return 0; //Not supported yet  
-#endif
 			}
 			return 0;
 		}
 
-		int CalculateTextureSizeBytes(Texture tTexture)
+		private int CalculateTextureSizeBytes(Texture tTexture)
 		{
-
-			int tWidth = tTexture.width;
-			int tHeight = tTexture.height;
+			var tWidth = tTexture.width;
+			var tHeight = tTexture.height;
 			if (tTexture is Texture2D)
 			{
 				Texture2D tTex2D = tTexture as Texture2D;
@@ -323,11 +312,11 @@ namespace PixelWizards.Utilities
 			}
 			if (tTexture is Texture2DArray)
 			{
-				Texture2DArray tTex2D = tTexture as Texture2DArray;
-				int bitsPerPixel = GetBitsPerPixel(tTex2D.format);
-				int mipMapCount = 10;
-				int mipLevel = 1;
-				int tSize = 0;
+				var tTex2D = tTexture as Texture2DArray;
+				var bitsPerPixel = GetBitsPerPixel(tTex2D.format);
+				var mipMapCount = 10;
+				var mipLevel = 1;
+				var tSize = 0;
 				while (mipLevel <= mipMapCount)
 				{
 					tSize += tWidth * tHeight * bitsPerPixel / 8;
@@ -347,11 +336,11 @@ namespace PixelWizards.Utilities
 		}
 
 
-		void SelectObject(Object selectedObject, bool append)
+		private void SelectObject(Object selectedObject, bool append)
 		{
 			if (append)
 			{
-				List<Object> currentSelection = new List<Object>(Selection.objects);
+				var currentSelection = new List<Object>(Selection.objects);
 				// Allow toggle selection
 				if (currentSelection.Contains(selectedObject)) currentSelection.Remove(selectedObject);
 				else currentSelection.Add(selectedObject);
@@ -361,27 +350,26 @@ namespace PixelWizards.Utilities
 			else Selection.activeObject = selectedObject;
 		}
 
-		void SelectObjects(List<Object> selectedObjects, bool append)
+		private void SelectObjects(List<Object> selectedObjects, bool append)
 		{
 			if (append)
 			{
-				List<Object> currentSelection = new List<Object>(Selection.objects);
+				var currentSelection = new List<Object>(Selection.objects);
 				currentSelection.AddRange(selectedObjects);
 				Selection.objects = currentSelection.ToArray();
 			}
 			else Selection.objects = selectedObjects.ToArray();
 		}
 
-		void ListTextures()
+		private void ListTextures()
 		{
 			textureListScrollPos = EditorGUILayout.BeginScrollView(textureListScrollPos);
 
-			foreach (TextureDetails tDetails in ActiveTextures)
+			foreach (var tDetails in ActiveTextures)
 			{
-
 				GUILayout.BeginHorizontal();
-				Texture tex = tDetails.texture;
-				if (tDetails.texture.GetType() == typeof(Texture2DArray) || tDetails.texture.GetType() == typeof(Cubemap))
+				var tex = tDetails.texture;
+				if (tDetails.texture is Texture2DArray || tDetails.texture is Cubemap)
 				{
 					tex = AssetPreview.GetMiniThumbnail(tDetails.texture);
 				}
@@ -399,10 +387,12 @@ namespace PixelWizards.Utilities
 				}
 				GUI.color = defColor;
 
-				string sizeLabel = "" + tDetails.texture.width + "x" + tDetails.texture.height;
+				var sizeLabel = "" + tDetails.texture.width + "x" + tDetails.texture.height;
 				if (tDetails.isCubeMap) sizeLabel += "x6";
 				if (tDetails.texture.GetType() == typeof(Texture2DArray))
+				{
 					sizeLabel += "[]\n" + ((Texture2DArray)tDetails.texture).depth + "depths";
+				}
 				sizeLabel += " - " + tDetails.mipMapCount + "mip\n" + FormatSizeString(tDetails.memSizeKB) + " - " + tDetails.format;
 
 				GUILayout.Label(sizeLabel, GUILayout.Width(120));
@@ -412,7 +402,7 @@ namespace PixelWizards.Utilities
 					SelectObjects(tDetails.FoundInMaterials, ctrlPressed);
 				}
 
-				HashSet<Object> FoundObjects = new HashSet<Object>();
+				var FoundObjects = new HashSet<Object>();
 				foreach (Renderer renderer in tDetails.FoundInRenderers) FoundObjects.Add(renderer.gameObject);
 				foreach (Animator animator in tDetails.FoundInAnimators) FoundObjects.Add(animator.gameObject);
 				foreach (Graphic graphic in tDetails.FoundInGraphics) FoundObjects.Add(graphic.gameObject);
@@ -431,8 +421,11 @@ namespace PixelWizards.Utilities
 				//GUILayout.Box(" ",GUILayout.Width(ThumbnailWidth),GUILayout.Height(ThumbnailHeight));
 				if (GUILayout.Button("Select \n All", GUILayout.Width(ThumbnailWidth * 2)))
 				{
-					List<Object> AllTextures = new List<Object>();
-					foreach (TextureDetails tDetails in ActiveTextures) AllTextures.Add(tDetails.texture);
+					var AllTextures = new List<Object>();
+					foreach (var tDetails in ActiveTextures)
+					{
+						AllTextures.Add(tDetails.texture);
+					}
 					SelectObjects(AllTextures, ctrlPressed);
 				}
 				EditorGUILayout.EndHorizontal();
@@ -444,40 +437,46 @@ namespace PixelWizards.Utilities
 		{
 			materialListScrollPos = EditorGUILayout.BeginScrollView(materialListScrollPos);
 
-			foreach (MaterialDetails tDetails in ActiveMaterials)
+			foreach (var tDetails in ActiveMaterials)
 			{
-				if (tDetails.material != null)
+				if (tDetails.material == null) continue;
+				
+				GUILayout.BeginHorizontal();
+
+				GUILayout.Box(AssetPreview.GetAssetPreview(tDetails.material), GUILayout.Width(ThumbnailWidth), GUILayout.Height(ThumbnailHeight));
+
+				if (tDetails.instance == true)
+					GUI.color = new Color(0.8f, 0.8f, defColor.b, 1.0f);
+				if (tDetails.isgui == true)
+					GUI.color = new Color(defColor.r, 0.95f, 0.8f, 1.0f);
+				if (tDetails.isSky)
+					GUI.color = new Color(0.9f, defColor.g, defColor.b, 1.0f);
+					
+				if (GUILayout.Button(tDetails.material.name, GUILayout.Width(150)))
 				{
-					GUILayout.BeginHorizontal();
-
-					GUILayout.Box(AssetPreview.GetAssetPreview(tDetails.material), GUILayout.Width(ThumbnailWidth), GUILayout.Height(ThumbnailHeight));
-
-					if (tDetails.instance == true)
-						GUI.color = new Color(0.8f, 0.8f, defColor.b, 1.0f);
-					if (tDetails.isgui == true)
-						GUI.color = new Color(defColor.r, 0.95f, 0.8f, 1.0f);
-					if (tDetails.isSky)
-						GUI.color = new Color(0.9f, defColor.g, defColor.b, 1.0f);
-					if (GUILayout.Button(tDetails.material.name, GUILayout.Width(150)))
-					{
-						SelectObject(tDetails.material, ctrlPressed);
-					}
-					GUI.color = defColor;
-
-					string shaderLabel = tDetails.material.shader != null ? tDetails.material.shader.name : "no shader";
-					GUILayout.Label(shaderLabel, GUILayout.Width(200));
-
-					if (GUILayout.Button((tDetails.FoundInRenderers.Count + tDetails.FoundInGraphics.Count) + " GO", GUILayout.Width(50)))
-					{
-						List<Object> FoundObjects = new List<Object>();
-						foreach (Renderer renderer in tDetails.FoundInRenderers) FoundObjects.Add(renderer.gameObject);
-						foreach (Graphic graphic in tDetails.FoundInGraphics) FoundObjects.Add(graphic.gameObject);
-						SelectObjects(FoundObjects, ctrlPressed);
-					}
-
-
-					GUILayout.EndHorizontal();
+					SelectObject(tDetails.material, ctrlPressed);
 				}
+				GUI.color = defColor;
+
+				var shaderLabel = tDetails.material.shader != null ? tDetails.material.shader.name : "no shader";
+				GUILayout.Label(shaderLabel, GUILayout.Width(200));
+
+				if (GUILayout.Button((tDetails.FoundInRenderers.Count + tDetails.FoundInGraphics.Count) + " GO", GUILayout.Width(50)))
+				{
+					var FoundObjects = new List<Object>();
+					foreach (var renderer in tDetails.FoundInRenderers)
+					{
+						FoundObjects.Add(renderer.gameObject);
+					}
+
+					foreach (var graphic in tDetails.FoundInGraphics)
+					{
+						FoundObjects.Add(graphic.gameObject);
+					}
+					SelectObjects(FoundObjects, ctrlPressed);
+				}
+
+				GUILayout.EndHorizontal();
 			}
 			EditorGUILayout.EndScrollView();
 		}
@@ -486,64 +485,74 @@ namespace PixelWizards.Utilities
 		{
 			meshListScrollPos = EditorGUILayout.BeginScrollView(meshListScrollPos);
 
-			foreach (MeshDetails tDetails in ActiveMeshDetails)
+			foreach (var tDetails in ActiveMeshDetails)
 			{
-				if (tDetails.mesh != null)
+				if (tDetails.mesh == null) continue;
+				
+				GUILayout.BeginHorizontal();
+				string name = tDetails.mesh.name;
+				if (!name.Any())
 				{
-					GUILayout.BeginHorizontal();
-					string name = tDetails.mesh.name;
-					if (name == null || name.Count() < 1)
-						name = tDetails.FoundInMeshFilters[0].gameObject.name;
-					if (tDetails.instance == true)
-						GUI.color = new Color(0.8f, 0.8f, defColor.b, 1.0f);
-					if (GUILayout.Button(name, GUILayout.Width(150)))
+					name = tDetails.FoundInMeshFilters[0].gameObject.name;
+				}
+				if (tDetails.instance == true)
+				{
+					GUI.color = new Color(0.8f, 0.8f, defColor.b, 1.0f);
+				}
+					
+				if (GUILayout.Button(name, GUILayout.Width(150)))
+				{
+					SelectObject(tDetails.mesh, ctrlPressed);
+				}
+					
+				GUI.color = defColor;
+				string sizeLabel = "" + tDetails.mesh.vertexCount + " vert";
+
+				GUILayout.Label(sizeLabel, GUILayout.Width(100));
+
+				if (GUILayout.Button(tDetails.FoundInMeshFilters.Count + " GO", GUILayout.Width(50)))
+				{
+					var FoundObjects = new List<Object>();
+					foreach (var meshFilter in tDetails.FoundInMeshFilters)
 					{
-						SelectObject(tDetails.mesh, ctrlPressed);
+						FoundObjects.Add(meshFilter.gameObject);
 					}
-					GUI.color = defColor;
-					string sizeLabel = "" + tDetails.mesh.vertexCount + " vert";
-
-					GUILayout.Label(sizeLabel, GUILayout.Width(100));
-
-
-					if (GUILayout.Button(tDetails.FoundInMeshFilters.Count + " GO", GUILayout.Width(50)))
+					SelectObjects(FoundObjects, ctrlPressed);
+				}
+				if (tDetails.FoundInSkinnedMeshRenderer.Count > 0)
+				{
+					if (GUILayout.Button(tDetails.FoundInSkinnedMeshRenderer.Count + " skinned mesh GO", GUILayout.Width(140)))
 					{
-						List<Object> FoundObjects = new List<Object>();
-						foreach (MeshFilter meshFilter in tDetails.FoundInMeshFilters) FoundObjects.Add(meshFilter.gameObject);
+						var FoundObjects = new List<Object>();
+						foreach (var skinnedMeshRenderer in tDetails.FoundInSkinnedMeshRenderer)
+						{
+							FoundObjects.Add(skinnedMeshRenderer.gameObject);
+						}
 						SelectObjects(FoundObjects, ctrlPressed);
 					}
-					if (tDetails.FoundInSkinnedMeshRenderer.Count > 0)
-					{
-						if (GUILayout.Button(tDetails.FoundInSkinnedMeshRenderer.Count + " skinned mesh GO", GUILayout.Width(140)))
-						{
-							List<Object> FoundObjects = new List<Object>();
-							foreach (SkinnedMeshRenderer skinnedMeshRenderer in tDetails.FoundInSkinnedMeshRenderer)
-								FoundObjects.Add(skinnedMeshRenderer.gameObject);
-							SelectObjects(FoundObjects, ctrlPressed);
-						}
-					}
-					else
-					{
-						GUI.color = new Color(defColor.r, defColor.g, defColor.b, 0.5f);
-						GUILayout.Label("   0 skinned mesh");
-						GUI.color = defColor;
-					}
-
-
-					GUILayout.EndHorizontal();
 				}
+				else
+				{
+					GUI.color = new Color(defColor.r, defColor.g, defColor.b, 0.5f);
+					GUILayout.Label("   0 skinned mesh");
+					GUI.color = defColor;
+				}
+
+				GUILayout.EndHorizontal();
 			}
 			EditorGUILayout.EndScrollView();
 		}
 
-		void ListMissing()
+		private void ListMissing()
 		{
 			missingListScrollPos = EditorGUILayout.BeginScrollView(missingListScrollPos);
-			foreach (MissingGraphic dMissing in MissingObjects)
+			foreach (var dMissing in MissingObjects)
 			{
 				GUILayout.BeginHorizontal();
 				if (GUILayout.Button(dMissing.name, GUILayout.Width(150)))
+				{
 					SelectObject(dMissing.Object, ctrlPressed);
+				}
 				GUILayout.Label("missing ", GUILayout.Width(48));
 				switch (dMissing.type)
 				{
@@ -566,47 +575,33 @@ namespace PixelWizards.Utilities
 
 		string FormatSizeString(int memSizeKB)
 		{
-			if (memSizeKB < 1024) return "" + memSizeKB + "k";
-			else
+			if (memSizeKB < 1024)
 			{
-				float memSizeMB = ((float)memSizeKB) / 1024.0f;
-				return memSizeMB.ToString("0.00") + "Mb";
+				return "" + memSizeKB + "k";
 			}
+			
+			var memSizeMB = ((float)memSizeKB) / 1024.0f;
+			return memSizeMB.ToString("0.00") + "Mb";
 		}
 
 
 		TextureDetails FindTextureDetails(Texture tTexture)
 		{
-			foreach (TextureDetails tTextureDetails in ActiveTextures)
-			{
-				if (tTextureDetails.texture == tTexture) return tTextureDetails;
-			}
-			return null;
-
+			return ActiveTextures.FirstOrDefault(tTextureDetails => tTextureDetails.texture == tTexture);
 		}
 
 		MaterialDetails FindMaterialDetails(Material tMaterial)
 		{
-			foreach (MaterialDetails tMaterialDetails in ActiveMaterials)
-			{
-				if (tMaterialDetails.material == tMaterial) return tMaterialDetails;
-			}
-			return null;
-
+			return ActiveMaterials.FirstOrDefault(tMaterialDetails => tMaterialDetails.material == tMaterial);
 		}
 
 		MeshDetails FindMeshDetails(Mesh tMesh)
 		{
-			foreach (MeshDetails tMeshDetails in ActiveMeshDetails)
-			{
-				if (tMeshDetails.mesh == tMesh) return tMeshDetails;
-			}
-			return null;
-
+			return ActiveMeshDetails.FirstOrDefault(tMeshDetails => tMeshDetails.mesh == tMesh);
 		}
 
 
-		void CheckResources()
+		private void CheckResources()
 		{
 			ActiveTextures.Clear();
 			ActiveMaterials.Clear();
@@ -614,59 +609,64 @@ namespace PixelWizards.Utilities
 			MissingObjects.Clear();
 			thingsMissing = false;
 
-			Renderer[] renderers = FindObjects<Renderer>();
+			var renderers = FindObjects<Renderer>();
 
-			MaterialDetails skyMat = new MaterialDetails();
-			skyMat.material = RenderSettings.skybox;
-			skyMat.isSky = true;
+			var skyMat = new MaterialDetails
+			{
+				material = RenderSettings.skybox,
+				isSky = true
+			};
 			ActiveMaterials.Add(skyMat);
 
 			//Debug.Log("Total renderers "+renderers.Length);
-			foreach (Renderer renderer in renderers)
+			foreach (var renderer in renderers)
 			{
 				//Debug.Log("Renderer is "+renderer.name);
-				foreach (Material material in renderer.sharedMaterials)
+				foreach (var material in renderer.sharedMaterials)
 				{
 
-					MaterialDetails tMaterialDetails = FindMaterialDetails(material);
+					var tMaterialDetails = FindMaterialDetails(material);
 					if (tMaterialDetails == null)
 					{
-						tMaterialDetails = new MaterialDetails();
-						tMaterialDetails.material = material;
+						tMaterialDetails = new MaterialDetails
+						{
+							material = material
+						};
 						ActiveMaterials.Add(tMaterialDetails);
 					}
 					tMaterialDetails.FoundInRenderers.Add(renderer);
 				}
 
-				if (renderer is SpriteRenderer)
-				{
-					SpriteRenderer tSpriteRenderer = (SpriteRenderer)renderer;
+				if (renderer is not SpriteRenderer) continue;
+				
+				var tSpriteRenderer = (SpriteRenderer)renderer;
 
-					if (tSpriteRenderer.sprite != null)
+				if (tSpriteRenderer.sprite != null)
+				{
+					var tSpriteTextureDetail = GetTextureDetail(tSpriteRenderer.sprite.texture, renderer);
+					if (!ActiveTextures.Contains(tSpriteTextureDetail))
 					{
-						var tSpriteTextureDetail = GetTextureDetail(tSpriteRenderer.sprite.texture, renderer);
-						if (!ActiveTextures.Contains(tSpriteTextureDetail))
-						{
-							ActiveTextures.Add(tSpriteTextureDetail);
-						}
+						ActiveTextures.Add(tSpriteTextureDetail);
 					}
-					else if (tSpriteRenderer.sprite == null)
+				}
+				else if (tSpriteRenderer.sprite == null)
+				{
+					var tMissing = new MissingGraphic
 					{
-						MissingGraphic tMissing = new MissingGraphic();
-						tMissing.Object = tSpriteRenderer.transform;
-						tMissing.type = "sprite";
-						tMissing.name = tSpriteRenderer.transform.name;
-						MissingObjects.Add(tMissing);
-						thingsMissing = true;
-					}
+						Object = tSpriteRenderer.transform,
+						type = "sprite",
+						name = tSpriteRenderer.transform.name
+					};
+					MissingObjects.Add(tMissing);
+					thingsMissing = true;
 				}
 			}
 
 			if (IncludeGuiElements)
 			{
-				Graphic[] graphics = FindObjects<Graphic>();
+				var graphics = FindObjects<Graphic>();
 
-				foreach (Graphic graphic in graphics)
+				foreach (var graphic in graphics)
 				{
 					if (graphic.mainTexture)
 					{
@@ -679,12 +679,14 @@ namespace PixelWizards.Utilities
 
 					if (graphic.materialForRendering)
 					{
-						MaterialDetails tMaterialDetails = FindMaterialDetails(graphic.materialForRendering);
+						var tMaterialDetails = FindMaterialDetails(graphic.materialForRendering);
 						if (tMaterialDetails == null)
 						{
-							tMaterialDetails = new MaterialDetails();
-							tMaterialDetails.material = graphic.materialForRendering;
-							tMaterialDetails.isgui = true;
+							tMaterialDetails = new MaterialDetails
+							{
+								material = graphic.materialForRendering,
+								isgui = true
+							};
 							ActiveMaterials.Add(tMaterialDetails);
 						}
 						tMaterialDetails.FoundInGraphics.Add(graphic);
@@ -694,106 +696,115 @@ namespace PixelWizards.Utilities
 
 			foreach (MaterialDetails tMaterialDetails in ActiveMaterials)
 			{
-				Material tMaterial = tMaterialDetails.material;
-				if (tMaterial != null)
+				var tMaterial = tMaterialDetails.material;
+				if (tMaterial == null) continue;
+				
+				var dependencies = EditorUtility.CollectDependencies(new UnityEngine.Object[] { tMaterial });
+				foreach (var obj in dependencies)
 				{
-					var dependencies = EditorUtility.CollectDependencies(new UnityEngine.Object[] { tMaterial });
-					foreach (Object obj in dependencies)
-					{
-						if (obj is Texture)
-						{
-							Texture tTexture = obj as Texture;
-							var tTextureDetail = GetTextureDetail(tTexture, tMaterial, tMaterialDetails);
-							tTextureDetail.isSky = tMaterialDetails.isSky;
-							tTextureDetail.instance = tMaterialDetails.instance;
-							tTextureDetail.isgui = tMaterialDetails.isgui;
-							ActiveTextures.Add(tTextureDetail);
-						}
-					}
+					if (obj is not Texture) continue;
+					
+					var tTexture = obj as Texture;
+					var tTextureDetail = GetTextureDetail(tTexture, tMaterial, tMaterialDetails);
+					tTextureDetail.isSky = tMaterialDetails.isSky;
+					tTextureDetail.instance = tMaterialDetails.instance;
+					tTextureDetail.isgui = tMaterialDetails.isgui;
+					ActiveTextures.Add(tTextureDetail);
+				}
 
-					//if the texture was downloaded, it won't be included in the editor dependencies
-					if (tMaterial.HasProperty("_MainTex"))
-					{
-						if (tMaterial.mainTexture != null && !dependencies.Contains(tMaterial.mainTexture))
-						{
-							var tTextureDetail = GetTextureDetail(tMaterial.mainTexture, tMaterial, tMaterialDetails);
-							ActiveTextures.Add(tTextureDetail);
-						}
-					}
+				//if the texture was downloaded, it won't be included in the editor dependencies
+				if (tMaterial.HasProperty("_MainTex"))
+				{
+					if (tMaterial.mainTexture == null || dependencies.Contains(tMaterial.mainTexture)) continue;
+						
+					var tTextureDetail = GetTextureDetail(tMaterial.mainTexture, tMaterial, tMaterialDetails);
+					ActiveTextures.Add(tTextureDetail);
 				}
 			}
 
 
-			MeshFilter[] meshFilters = FindObjects<MeshFilter>();
+			var meshFilters = FindObjects<MeshFilter>();
 
-			foreach (MeshFilter tMeshFilter in meshFilters)
+			foreach (var tMeshFilter in meshFilters)
 			{
-				Mesh tMesh = tMeshFilter.sharedMesh;
+				var tMesh = tMeshFilter.sharedMesh;
 				if (tMesh != null)
 				{
-					MeshDetails tMeshDetails = FindMeshDetails(tMesh);
+					var tMeshDetails = FindMeshDetails(tMesh);
 					if (tMeshDetails == null)
 					{
-						tMeshDetails = new MeshDetails();
-						tMeshDetails.mesh = tMesh;
+						tMeshDetails = new MeshDetails
+						{
+							mesh = tMesh
+						};
 						ActiveMeshDetails.Add(tMeshDetails);
 					}
 					tMeshDetails.FoundInMeshFilters.Add(tMeshFilter);
 				}
 				else if (tMesh == null && tMeshFilter.transform.GetComponent("TextContainer") == null)
 				{
-					MissingGraphic tMissing = new MissingGraphic();
-					tMissing.Object = tMeshFilter.transform;
-					tMissing.type = "mesh";
-					tMissing.name = tMeshFilter.transform.name;
+					var tMissing = new MissingGraphic
+					{
+						Object = tMeshFilter.transform,
+						type = "mesh",
+						name = tMeshFilter.transform.name
+					};
 					MissingObjects.Add(tMissing);
 					thingsMissing = true;
 				}
 
-				var meshRenderrer = tMeshFilter.transform.GetComponent<MeshRenderer>();
+				var meshRenderer = tMeshFilter.transform.GetComponent<MeshRenderer>();
 
-				if (meshRenderrer == null || meshRenderrer.sharedMaterial == null)
+				if (meshRenderer == null || meshRenderer.sharedMaterial == null)
 				{
-					MissingGraphic tMissing = new MissingGraphic();
-					tMissing.Object = tMeshFilter.transform;
-					tMissing.type = "material";
-					tMissing.name = tMeshFilter.transform.name;
+					var tMissing = new MissingGraphic
+					{
+						Object = tMeshFilter.transform,
+						type = "material",
+						name = tMeshFilter.transform.name
+					};
 					MissingObjects.Add(tMissing);
 					thingsMissing = true;
 				}
 			}
 
-			SkinnedMeshRenderer[] skinnedMeshRenderers = FindObjects<SkinnedMeshRenderer>();
+			var skinnedMeshRenderers = FindObjects<SkinnedMeshRenderer>();
 
-			foreach (SkinnedMeshRenderer tSkinnedMeshRenderer in skinnedMeshRenderers)
+			foreach (var tSkinnedMeshRenderer in skinnedMeshRenderers)
 			{
-				Mesh tMesh = tSkinnedMeshRenderer.sharedMesh;
+				var tMesh = tSkinnedMeshRenderer.sharedMesh;
 				if (tMesh != null)
 				{
-					MeshDetails tMeshDetails = FindMeshDetails(tMesh);
+					var tMeshDetails = FindMeshDetails(tMesh);
 					if (tMeshDetails == null)
 					{
-						tMeshDetails = new MeshDetails();
-						tMeshDetails.mesh = tMesh;
+						tMeshDetails = new MeshDetails
+						{
+							mesh = tMesh
+						};
 						ActiveMeshDetails.Add(tMeshDetails);
 					}
 					tMeshDetails.FoundInSkinnedMeshRenderer.Add(tSkinnedMeshRenderer);
 				}
 				else if (tMesh == null)
 				{
-					MissingGraphic tMissing = new MissingGraphic();
-					tMissing.Object = tSkinnedMeshRenderer.transform;
-					tMissing.type = "mesh";
-					tMissing.name = tSkinnedMeshRenderer.transform.name;
+					var tMissing = new MissingGraphic
+					{
+						Object = tSkinnedMeshRenderer.transform,
+						type = "mesh",
+						name = tSkinnedMeshRenderer.transform.name
+					};
 					MissingObjects.Add(tMissing);
 					thingsMissing = true;
 				}
 				if (tSkinnedMeshRenderer.sharedMaterial == null)
 				{
-					MissingGraphic tMissing = new MissingGraphic();
-					tMissing.Object = tSkinnedMeshRenderer.transform;
-					tMissing.type = "material";
-					tMissing.name = tSkinnedMeshRenderer.transform.name;
+					var tMissing = new MissingGraphic
+					{
+						Object = tSkinnedMeshRenderer.transform,
+						type = "material",
+						name = tSkinnedMeshRenderer.transform.name
+					};
 					MissingObjects.Add(tMissing);
 					thingsMissing = true;
 				}
@@ -801,14 +812,10 @@ namespace PixelWizards.Utilities
 
 			if (IncludeSpriteAnimations)
 			{
-				Animator[] animators = FindObjects<Animator>();
-				foreach (Animator anim in animators)
+				var animators = FindObjects<Animator>();
+				foreach (var anim in animators)
 				{
-#if UNITY_4_6 || UNITY_4_5 || UNITY_4_4 || UNITY_4_3
-				UnityEditorInternal.AnimatorController ac = anim.runtimeAnimatorController as UnityEditorInternal.AnimatorController;
-#elif UNITY_5 || UNITY_5_3_OR_NEWER
-					UnityEditor.Animations.AnimatorController ac = anim.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
-#endif
+					var ac = anim.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
 
 					//Skip animators without layers, this can happen if they don't have an animator controller.
 					if (!ac || ac.layers == null || ac.layers.Length == 0)
@@ -816,49 +823,34 @@ namespace PixelWizards.Utilities
 
 					for (int x = 0; x < anim.layerCount; x++)
 					{
-#if UNITY_4_6 || UNITY_4_5 || UNITY_4_4 || UNITY_4_3
-					UnityEditorInternal.StateMachine sm = ac.GetLayer(x).stateMachine;
-					int cnt = sm.stateCount;
-#elif UNITY_5 || UNITY_5_3_OR_NEWER
-						UnityEditor.Animations.AnimatorStateMachine sm = ac.layers[x].stateMachine;
-						int cnt = sm.states.Length;
-#endif
+						var sm = ac.layers[x].stateMachine;
+						var cnt = sm.states.Length;
 
 						for (int i = 0; i < cnt; i++)
 						{
-#if UNITY_4_6 || UNITY_4_5 || UNITY_4_4 || UNITY_4_3
-						UnityEditorInternal.State state = sm.GetState(i);
-						Motion m = state.GetMotion();
-#elif UNITY_5 || UNITY_5_3_OR_NEWER
-							UnityEditor.Animations.AnimatorState state = sm.states[i].state;
-							Motion m = state.motion;
-#endif
-							if (m != null)
+							var state = sm.states[i].state;
+							var m = state.motion;
+							if (m == null) continue;
+							var clip = m as AnimationClip;
+
+							if (clip == null) continue;
+							
+							var ecbs = AnimationUtility.GetObjectReferenceCurveBindings(clip);
+
+							foreach (var ecb in ecbs)
 							{
-								AnimationClip clip = m as AnimationClip;
-
-								if (clip != null)
+								if (ecb.propertyName != "m_Sprite") continue;
+								
+								foreach (var keyframe in AnimationUtility.GetObjectReferenceCurve(clip, ecb))
 								{
-									EditorCurveBinding[] ecbs = AnimationUtility.GetObjectReferenceCurveBindings(clip);
+									var tSprite = keyframe.value as Sprite;
 
-									foreach (EditorCurveBinding ecb in ecbs)
+									if (tSprite == null) continue;
+												
+									var tTextureDetail = GetTextureDetail(tSprite.texture, anim);
+									if (!ActiveTextures.Contains(tTextureDetail))
 									{
-										if (ecb.propertyName == "m_Sprite")
-										{
-											foreach (ObjectReferenceKeyframe keyframe in AnimationUtility.GetObjectReferenceCurve(clip, ecb))
-											{
-												Sprite tSprite = keyframe.value as Sprite;
-
-												if (tSprite != null)
-												{
-													var tTextureDetail = GetTextureDetail(tSprite.texture, anim);
-													if (!ActiveTextures.Contains(tTextureDetail))
-													{
-														ActiveTextures.Add(tTextureDetail);
-													}
-												}
-											}
-										}
+										ActiveTextures.Add(tTextureDetail);
 									}
 								}
 							}
@@ -870,15 +862,15 @@ namespace PixelWizards.Utilities
 
 			if (IncludeScriptReferences)
 			{
-				MonoBehaviour[] scripts = FindObjects<MonoBehaviour>();
-				foreach (MonoBehaviour script in scripts)
+				var scripts = FindObjects<MonoBehaviour>();
+				foreach (var script in scripts)
 				{
-					BindingFlags flags = BindingFlags.Public | BindingFlags.Instance; // only public non-static fields are bound to by Unity.
-					FieldInfo[] fields = script.GetType().GetFields(flags);
+					var flags = BindingFlags.Public | BindingFlags.Instance; // only public non-static fields are bound to by Unity.
+					var fields = script.GetType().GetFields(flags);
 
-					foreach (FieldInfo field in fields)
+					foreach (var field in fields)
 					{
-						System.Type fieldType = field.FieldType;
+						Type fieldType = field.FieldType;
 						if (fieldType == typeof(Sprite))
 						{
 							Sprite tSprite = field.GetValue(script) as Sprite;
@@ -908,37 +900,37 @@ namespace PixelWizards.Utilities
 						}
 						if (fieldType == typeof(Material))
 						{
-							Material tMaterial = field.GetValue(script) as Material;
-							if (tMaterial != null)
+							var tMaterial = field.GetValue(script) as Material;
+							if (tMaterial == null) continue;
+							
+							var tMatDetails = FindMaterialDetails(tMaterial);
+							if (tMatDetails == null)
 							{
-								MaterialDetails tMatDetails = FindMaterialDetails(tMaterial);
-								if (tMatDetails == null)
+								tMatDetails = new MaterialDetails
 								{
-									tMatDetails = new MaterialDetails();
-									tMatDetails.instance = true;
-									tMatDetails.material = tMaterial;
-									if (!ActiveMaterials.Contains(tMatDetails))
-										ActiveMaterials.Add(tMatDetails);
-								}
-								if (tMaterial.mainTexture)
+									instance = true,
+									material = tMaterial
+								};
+								if (!ActiveMaterials.Contains(tMatDetails))
+									ActiveMaterials.Add(tMatDetails);
+							}
+							if (tMaterial.mainTexture)
+							{
+								var tSpriteTextureDetail = GetTextureDetail(tMaterial.mainTexture);
+								if (!ActiveTextures.Contains(tSpriteTextureDetail))
 								{
-									var tSpriteTextureDetail = GetTextureDetail(tMaterial.mainTexture);
-									if (!ActiveTextures.Contains(tSpriteTextureDetail))
-									{
-										ActiveTextures.Add(tSpriteTextureDetail);
-									}
+									ActiveTextures.Add(tSpriteTextureDetail);
 								}
-								var dependencies = EditorUtility.CollectDependencies(new UnityEngine.Object[] { tMaterial });
-								foreach (Object obj in dependencies)
-								{
-									if (obj is Texture)
-									{
-										Texture tTexture = obj as Texture;
-										var tTextureDetail = GetTextureDetail(tTexture, tMaterial, tMatDetails);
-										if (!ActiveTextures.Contains(tTextureDetail))
-											ActiveTextures.Add(tTextureDetail);
-									}
-								}
+							}
+							var dependencies = EditorUtility.CollectDependencies(new Object[] { tMaterial });
+							foreach (var obj in dependencies)
+							{
+								if (obj is not Texture) continue;
+								
+								Texture tTexture = obj as Texture;
+								var tTextureDetail = GetTextureDetail(tTexture, tMaterial, tMatDetails);
+								if (!ActiveTextures.Contains(tTextureDetail))
+									ActiveTextures.Add(tTextureDetail);
 							}
 						}
 					}
@@ -946,52 +938,44 @@ namespace PixelWizards.Utilities
 			}
 
 			TotalTextureMemory = 0;
-			foreach (TextureDetails tTextureDetails in ActiveTextures) TotalTextureMemory += tTextureDetails.memSizeKB;
+			foreach (var tTextureDetails in ActiveTextures) TotalTextureMemory += tTextureDetails.memSizeKB;
 
 			TotalMeshVertices = 0;
-			foreach (MeshDetails tMeshDetails in ActiveMeshDetails) TotalMeshVertices += tMeshDetails.mesh.vertexCount;
+			foreach (var tMeshDetails in ActiveMeshDetails) TotalMeshVertices += tMeshDetails.mesh.vertexCount;
 
 			// Sort by size, descending
-			ActiveTextures.Sort(delegate (TextureDetails details1, TextureDetails details2) { return details2.memSizeKB - details1.memSizeKB; });
+			ActiveTextures.Sort((details1, details2) => details2.memSizeKB - details1.memSizeKB);
 			ActiveTextures = ActiveTextures.Distinct().ToList();
-			ActiveMeshDetails.Sort(delegate (MeshDetails details1, MeshDetails details2) { return details2.mesh.vertexCount - details1.mesh.vertexCount; });
+			ActiveMeshDetails.Sort((details1, details2) => details2.mesh.vertexCount - details1.mesh.vertexCount);
 
 			collectedInPlayingMode = Application.isPlaying;
 		}
 
 		private static GameObject[] GetAllRootGameObjects()
 		{
-#if !UNITY_5 && !UNITY_5_3_OR_NEWER
-		return UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects().ToArray();
-#else
-			List<GameObject> allGo = new List<GameObject>();
-			for (int sceneIdx = 0; sceneIdx < UnityEngine.SceneManagement.SceneManager.sceneCount; ++sceneIdx)
+			var allGo = new List<GameObject>();
+			for (var sceneIdx = 0; sceneIdx < UnityEngine.SceneManagement.SceneManager.sceneCount; ++sceneIdx)
 			{
 				allGo.AddRange(UnityEngine.SceneManagement.SceneManager.GetSceneAt(sceneIdx).GetRootGameObjects().ToArray());
 			}
 			return allGo.ToArray();
-#endif
 		}
 
 		private T[] FindObjects<T>() where T : Object
 		{
 			if (IncludeDisabledObjects)
 			{
-				List<T> meshfilters = new List<T>();
-				GameObject[] allGo = GetAllRootGameObjects();
-				foreach (GameObject go in allGo)
+				var meshfilters = new List<T>();
+				var allGo = GetAllRootGameObjects();
+				foreach (var go in allGo)
 				{
-					Transform[] tgo = go.GetComponentsInChildren<Transform>(true).ToArray();
-					foreach (Transform tr in tgo)
-					{
-						if (tr.GetComponent<T>())
-							meshfilters.Add(tr.GetComponent<T>());
-					}
+					var tgo = go.GetComponentsInChildren<Transform>(true).ToArray();
+					meshfilters.AddRange(from tr in tgo where tr.GetComponent<T>() select tr.GetComponent<T>());
 				}
 				return (T[])meshfilters.ToArray();
 			}
 			else
-				return (T[])FindObjectsOfType(typeof(T));
+				return (T[])FindObjectsByType(typeof(T), FindObjectsSortMode.None);
 		}
 
 		private TextureDetails GetTextureDetail(Texture tTexture, Material tMaterial, MaterialDetails tMaterialDetails)
@@ -999,16 +983,16 @@ namespace PixelWizards.Utilities
 			TextureDetails tTextureDetails = GetTextureDetail(tTexture);
 
 			tTextureDetails.FoundInMaterials.Add(tMaterial);
-			foreach (Renderer renderer in tMaterialDetails.FoundInRenderers)
+			foreach (var renderer in tMaterialDetails.FoundInRenderers.Where(renderer => !tTextureDetails.FoundInRenderers.Contains(renderer)))
 			{
-				if (!tTextureDetails.FoundInRenderers.Contains(renderer)) tTextureDetails.FoundInRenderers.Add(renderer);
+				tTextureDetails.FoundInRenderers.Add(renderer);
 			}
 			return tTextureDetails;
 		}
 
 		private TextureDetails GetTextureDetail(Texture tTexture, Renderer renderer)
 		{
-			TextureDetails tTextureDetails = GetTextureDetail(tTexture);
+			var tTextureDetails = GetTextureDetail(tTexture);
 
 			tTextureDetails.FoundInRenderers.Add(renderer);
 			return tTextureDetails;
@@ -1016,7 +1000,7 @@ namespace PixelWizards.Utilities
 
 		private TextureDetails GetTextureDetail(Texture tTexture, Animator animator)
 		{
-			TextureDetails tTextureDetails = GetTextureDetail(tTexture);
+			var tTextureDetails = GetTextureDetail(tTexture);
 
 			tTextureDetails.FoundInAnimators.Add(animator);
 			return tTextureDetails;

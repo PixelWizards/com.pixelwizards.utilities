@@ -1,131 +1,210 @@
-﻿using UnityEngine;
+﻿using System;
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
+using UnityEngine;
 
 namespace PixelWizards.Utilities
 {
-    // This causes the class' static constructor to be called on load and on starting playmode
-    [InitializeOnLoad]
-    class PhysicsSettler
+    internal static class PhysicsSettler
     {
-        // only ever register once
-        static bool registered = false;
+        private const string MenuPath = "Tools/Physics/Settle Physics";
+        private const string ShortcutPath = "Tools/Physics/Settle Physics";
+        private const float MaxSettleTime = 5f;
+        private const float SimulationStep = 1f / 60f;
+        private const float OverlayWidth = 220f;
 
-        // are we actively settling physics in our scene
-        static bool active = false;
+        private static bool s_IsActive;
+        private static double s_StartTime;
+        private static double s_LastStepTime;
 
-        // the work list of rigid bodies we can find loaded up
-        static Rigidbody[] workList;
+        private static Rigidbody[] s_WorkList = Array.Empty<Rigidbody>();
+        private static SimulationMode s_PreviousSimulationMode;
 
-        // we need to disable auto simulation to manually tick physics
-        static SimulationMode cachedAutoSimulation;
-
-        // how long do we run physics for before we give up getting things to sleep
-        const float timeToSettle = 5f;
-
-        // how long have we been running
-        static float activeTime = 0f;
-
-        // this is the static constructor called by [InitializeOnLoad]
-        static PhysicsSettler()
+        [MenuItem(MenuPath)]
+        private static void StartSettle()
         {
-            if (!registered)
+            if (s_IsActive)
             {
-                // hook into the editor update
-                EditorApplication.update += Update;
+                return;
+            }
 
-                // and the scene view OnGui
-                SceneView.duringSceneGui += OnSceneGUI;
-                registered = true;
+            s_WorkList = UnityEngine.Object.FindObjectsByType<Rigidbody>(FindObjectsSortMode.None);
+
+            if (s_WorkList.Length == 0)
+            {
+                Debug.Log("Physics Settler: No Rigidbody components found in loaded scenes.");
+                return;
+            }
+
+            s_PreviousSimulationMode = Physics.simulationMode;
+            Physics.simulationMode = SimulationMode.Script;
+
+            for (int i = 0; i < s_WorkList.Length; i++)
+            {
+                if (s_WorkList[i] != null)
+                {
+                    s_WorkList[i].WakeUp();
+                }
+            }
+
+            s_IsActive = true;
+            s_StartTime = EditorApplication.timeSinceStartup;
+            s_LastStepTime = s_StartTime;
+
+            EditorApplication.update += OnEditorUpdate;
+            SceneView.duringSceneGui += OnSceneGUI;
+
+            Menu.SetChecked(MenuPath, true);
+
+            Debug.Log($"Physics Settler: Started settling {s_WorkList.Length} rigidbodies.");
+        }
+
+        [MenuItem(MenuPath, true)]
+        private static bool ValidateStartSettle()
+        {
+            return !s_IsActive;
+        }
+
+        [MenuItem("Tools/Physics/Stop Settling", true)]
+        private static bool ValidateStopSettle()
+        {
+            return s_IsActive;
+        }
+
+        [MenuItem("Tools/Physics/Stop Settling")]
+        private static void StopSettleMenu()
+        {
+            StopSettling("Stopped manually.");
+        }
+
+        [Shortcut(ShortcutPath, KeyCode.Q, ShortcutModifiers.Action | ShortcutModifiers.Alt)]
+        private static void StartSettleShortcut()
+        {
+            if (!s_IsActive)
+            {
+                StartSettle();
             }
         }
 
-        // let users turn on 
-        [Shortcut("Edit/Settle Physics", KeyCode.Q, ShortcutModifiers.Action | ShortcutModifiers.Alt)]
-        static void Activate()
+        private static void OnEditorUpdate()
         {
-            if (!active)
+            if (!s_IsActive)
             {
-                active = true;
+                return;
+            }
 
-                // Normally avoid Find functions, but this is editor time and only happens once
-                workList = Object.FindObjectsOfType<Rigidbody>();
+            double now = EditorApplication.timeSinceStartup;
+            float elapsed = (float)(now - s_StartTime);
 
-                // we will need to ensure autoSimulation is off to manually tick physics
-                cachedAutoSimulation = Physics.simulationMode;
-                activeTime = 0f;
+            if (elapsed >= MaxSettleTime)
+            {
+                StopSettling("Reached maximum settle time.");
+                return;
+            }
 
-                // make sure that all rigidbodies are awake so they will actively settle against changed geometry.
-                foreach (Rigidbody body in workList)
+            if (AllBodiesSleeping())
+            {
+                StopSettling("All rigidbodies are sleeping.");
+                return;
+            }
+
+            // Simulate in fixed-size chunks so editor framerate does not affect settling behavior too much.
+            while ((now - s_LastStepTime) >= SimulationStep)
+            {
+                Physics.Simulate(SimulationStep);
+                s_LastStepTime += SimulationStep;
+
+                if (AllBodiesSleeping())
                 {
-                    body.WakeUp();
+                    StopSettling("All rigidbodies are sleeping.");
+                    return;
+                }
+
+                elapsed = (float)(EditorApplication.timeSinceStartup - s_StartTime);
+                if (elapsed >= MaxSettleTime)
+                {
+                    StopSettling("Reached maximum settle time.");
+                    return;
                 }
             }
+
+            SceneView.RepaintAll();
         }
 
-        // grey out the menu item while we are settling physics
-        [MenuItem("Edit/Settle Physics", true)]
-        static bool checkMenu()
+        private static bool AllBodiesSleeping()
         {
-            return !active;
-        }
-
-        static void Update()
-        {
-            if (active)
+            for (int i = 0; i < s_WorkList.Length; i++)
             {
-                activeTime += Time.deltaTime;
-
-                // make sure we are not autosimulating
-                Physics.simulationMode = SimulationMode.Script;
-
-                // see if all our 
-                bool allSleeping = true;
-                foreach (Rigidbody body in workList)
+                Rigidbody body = s_WorkList[i];
+                if (body == null)
                 {
-                    if (body != null)
-                    {
-                        allSleeping &= body.IsSleeping();
-                    }
+                    continue;
                 }
 
-                if (allSleeping || activeTime >= timeToSettle)
+                if (!body.IsSleeping())
                 {
-                    Physics.simulationMode = cachedAutoSimulation;
-                    active = false;
-                }
-                else
-                {
-                    Physics.Simulate(Time.deltaTime);
+                    return false;
                 }
             }
+
+            return true;
         }
 
-        static void OnSceneGUI(SceneView sceneView)
+        private static void StopSettling(string reason)
         {
-            if (active)
+            if (!s_IsActive)
             {
-                Handles.BeginGUI();
-                Color cacheColor = GUI.color;
-                GUI.color = Color.red;
-                GUILayout.Label("Simulating Physics.", GUI.skin.box, GUILayout.Width(200));
-                GUILayout.Label(string.Format("Time Remaining: {0:F2}", (timeToSettle - activeTime)), GUI.skin.box, GUILayout.Width(200));
-                Handles.EndGUI();
-
-                foreach (Rigidbody body in workList)
-                {
-                    if (body != null)
-                    {
-                        bool isSleeping = body.IsSleeping();
-                        if (!isSleeping)
-                        {
-                            GUI.color = Color.green;
-                            Handles.Label(body.transform.position, "SIMULATING");
-                        }
-                    }
-                }
-                GUI.color = cacheColor;
+                return;
             }
+
+            Physics.simulationMode = s_PreviousSimulationMode;
+
+            EditorApplication.update -= OnEditorUpdate;
+            SceneView.duringSceneGui -= OnSceneGUI;
+
+            s_IsActive = false;
+            s_WorkList = Array.Empty<Rigidbody>();
+
+            Menu.SetChecked(MenuPath, false);
+
+            Debug.Log($"Physics Settler: {reason}");
+        }
+
+        private static void OnSceneGUI(SceneView sceneView)
+        {
+            if (!s_IsActive)
+            {
+                return;
+            }
+
+            float elapsed = (float)(EditorApplication.timeSinceStartup - s_StartTime);
+            float remaining = Mathf.Max(0f, MaxSettleTime - elapsed);
+
+            Handles.BeginGUI();
+
+            Rect rect = new Rect(12f, 12f, OverlayWidth, 48f);
+            GUILayout.BeginArea(rect, GUI.skin.window);
+            GUILayout.Label("Settling Physics");
+            GUILayout.Label($"Time Remaining: {remaining:F2}s");
+            GUILayout.EndArea();
+
+            Handles.EndGUI();
+
+            Color previousColor = Handles.color;
+            Handles.color = Color.green;
+
+            for (int i = 0; i < s_WorkList.Length; i++)
+            {
+                Rigidbody body = s_WorkList[i];
+                if (body == null || body.IsSleeping())
+                {
+                    continue;
+                }
+
+                Handles.Label(body.worldCenterOfMass, "SIMULATING");
+            }
+
+            Handles.color = previousColor;
         }
     }
 }

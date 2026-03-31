@@ -11,7 +11,8 @@
     "url": "www.pixelwizards.ca"
   },
   "dependencies": {
-    "com.unity.textmeshpro": "3.0.9"
+    "com.unity.textmeshpro": "3.0.9",
+	"com.unity.editorcoroutines" : "1.0.0"
   },
   "keywords": [
     "Editor",
