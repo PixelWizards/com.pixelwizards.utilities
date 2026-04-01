@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace PixelWizards.Utilities
 {
@@ -76,7 +77,6 @@ namespace PixelWizards.Utilities
         {
             StopSettling("Stopped manually.");
         }
-                workList = Object.FindObjectsOfType<Rigidbody>();
 
         [Shortcut(ShortcutPath, KeyCode.Q, ShortcutModifiers.Action | ShortcutModifiers.Alt)]
         private static void StartSettleShortcut()
