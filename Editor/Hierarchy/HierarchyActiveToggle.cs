@@ -15,6 +15,11 @@ namespace PixelWizards.EditorTools
 
         private static void OnHierarchyGUI(EntityId entityId, Rect rect)
         {
+            if (Event.current.type == EventType.MouseMove)
+            {
+                EditorApplication.RepaintHierarchyWindow();
+            }
+            
             var obj = EditorUtility.EntityIdToObject(entityId) as GameObject;
             if (!obj)
                 return;
@@ -29,9 +34,7 @@ namespace PixelWizards.EditorTools
             );
 
             bool isHoveringToggle = toggleRect.Contains(Event.current.mousePosition);
-            bool shouldDraw = !obj.activeSelf || isHoveringToggle;
-
-            if (!shouldDraw)
+            if (!isHoveringToggle)
                 return;
 
             EditorGUI.BeginChangeCheck();
