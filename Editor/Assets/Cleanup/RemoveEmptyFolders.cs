@@ -17,14 +17,14 @@ namespace PixelWizards.Utilities
 		static readonly StringBuilder s_Log = new StringBuilder();
 		static readonly List<DirectoryInfo> s_Results = new List<DirectoryInfo>();
 
-		/// <summary>
-		/// Raises the initialize on load method event.
-		/// </summary>
-		[InitializeOnLoadMethod]
-		static void OnInitializeOnLoadMethod()
-		{
-			EditorApplication.delayCall += () => Valid();
-		}
+		// /// <summary>
+		// /// Raises the initialize on load method event.
+		// /// </summary>
+		// [InitializeOnLoadMethod]
+		// static void OnInitializeOnLoadMethod()
+		// {
+		// 	EditorApplication.delayCall += () => Valid();
+		// }
 
 		/// <summary>
 		/// Raises the will save assets event.
@@ -66,7 +66,7 @@ namespace PixelWizards.Utilities
 		/// Toggles the menu.
 		/// </summary>
 		[MenuItem(kMenuText)]
-		static void OnClickMenu()
+		private static void OnClickMenu()
 		{
 			// Check/Uncheck menu.
 			bool isChecked = !Menu.GetChecked(kMenuText);
@@ -81,7 +81,7 @@ namespace PixelWizards.Utilities
 		}
 	
 		[MenuItem(kMenuText, true)]
-		static bool Valid()
+		private static bool Valid()
 		{
 			// Check/Uncheck menu from EditorPrefs.
 			Menu.SetChecked(kMenuText, EditorPrefs.GetBool(kMenuText, false));
@@ -91,7 +91,7 @@ namespace PixelWizards.Utilities
 		/// <summary>
 		/// Get empty directories.
 		/// </summary>
-		static bool GetEmptyDirectories(DirectoryInfo dir, List<DirectoryInfo> results)
+		private static bool GetEmptyDirectories(DirectoryInfo dir, List<DirectoryInfo> results)
 		{
 			bool isEmpty = true;
 			try
@@ -101,6 +101,7 @@ namespace PixelWizards.Utilities
 			}
 			catch
 			{
+				// ignored
 			}
 
 			// Store empty directory to results.

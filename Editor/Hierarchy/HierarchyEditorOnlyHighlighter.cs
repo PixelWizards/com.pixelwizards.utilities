@@ -4,7 +4,7 @@ using UnityEngine;
 namespace PixelWizards.EditorTools
 {
     [InitializeOnLoad]
-    public static class EditorOnlyHierarchyHighlighter
+    public static class HierarchyEditorOnlyHighlighter
     {
         private static readonly Color BackgroundColor = new Color(1f, 0.2f, 0.2f, 0.16f);
         private static readonly Color LabelColor = new Color(1f, 0.4f, 0.4f, 1f);
@@ -14,18 +14,18 @@ namespace PixelWizards.EditorTools
 
         private static Texture2D badgeTexture;
 
-        static EditorOnlyHierarchyHighlighter()
+        static HierarchyEditorOnlyHighlighter()
         {
-            EditorApplication.hierarchyWindowItemOnGUI -= OnHierarchyGUI;
-            EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyGUI;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI -= OnHierarchyGUI;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI += OnHierarchyGUI;
 
             // Simple built-in icon (you can swap this)
             badgeTexture = EditorGUIUtility.IconContent("console.warnicon").image as Texture2D;
         }
 
-        private static void OnHierarchyGUI(int instanceID, Rect selectionRect)
+        private static void OnHierarchyGUI(EntityId entityId, Rect selectionRect)
         {
-            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            GameObject go = EditorUtility.EntityIdToObject(entityId) as GameObject;
             if (go == null || !go.CompareTag("EditorOnly"))
                 return;
 

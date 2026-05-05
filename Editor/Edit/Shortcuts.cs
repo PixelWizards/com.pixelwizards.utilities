@@ -5,9 +5,10 @@ using UnityEditor.ShortcutManagement;
 
 namespace PixelWizards.Utilities
 {
-    [InitializeOnLoad]
+    //[InitializeOnLoad]
     public class Shortcuts
     {
+        /*
         static Shortcuts()
         {
             SceneView.duringSceneGui += CheckSceneShortcuts;
@@ -59,6 +60,7 @@ namespace PixelWizards.Utilities
 
             }
         }
+        */
         
         [Shortcut("Edit/Find In Project", KeyCode.G, ShortcutModifiers.Alt)]
         public static void ProjectSearch()
