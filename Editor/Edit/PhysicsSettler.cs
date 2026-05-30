@@ -29,7 +29,7 @@ namespace PixelWizards.Utilities
                 return;
             }
 
-            s_WorkList = UnityEngine.Object.FindObjectsByType<Rigidbody>(FindObjectsSortMode.None);
+            s_WorkList = Object.FindObjectsByType<Rigidbody>();
 
             if (s_WorkList.Length == 0)
             {

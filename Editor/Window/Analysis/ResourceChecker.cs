@@ -440,7 +440,7 @@ namespace PixelWizards.Utilities
 			foreach (var tDetails in ActiveMaterials)
 			{
 				if (tDetails.material == null) continue;
-				
+
 				GUILayout.BeginHorizontal();
 
 				GUILayout.Box(AssetPreview.GetAssetPreview(tDetails.material), GUILayout.Width(ThumbnailWidth), GUILayout.Height(ThumbnailHeight));
@@ -451,7 +451,7 @@ namespace PixelWizards.Utilities
 					GUI.color = new Color(defColor.r, 0.95f, 0.8f, 1.0f);
 				if (tDetails.isSky)
 					GUI.color = new Color(0.9f, defColor.g, defColor.b, 1.0f);
-					
+
 				if (GUILayout.Button(tDetails.material.name, GUILayout.Width(150)))
 				{
 					SelectObject(tDetails.material, ctrlPressed);
@@ -488,7 +488,7 @@ namespace PixelWizards.Utilities
 			foreach (var tDetails in ActiveMeshDetails)
 			{
 				if (tDetails.mesh == null) continue;
-				
+
 				GUILayout.BeginHorizontal();
 				string name = tDetails.mesh.name;
 				if (!name.Any())
@@ -499,12 +499,12 @@ namespace PixelWizards.Utilities
 				{
 					GUI.color = new Color(0.8f, 0.8f, defColor.b, 1.0f);
 				}
-					
+
 				if (GUILayout.Button(name, GUILayout.Width(150)))
 				{
 					SelectObject(tDetails.mesh, ctrlPressed);
 				}
-					
+
 				GUI.color = defColor;
 				string sizeLabel = "" + tDetails.mesh.vertexCount + " vert";
 
@@ -579,7 +579,7 @@ namespace PixelWizards.Utilities
 			{
 				return "" + memSizeKB + "k";
 			}
-			
+
 			var memSizeMB = ((float)memSizeKB) / 1024.0f;
 			return memSizeMB.ToString("0.00") + "Mb";
 		}
@@ -638,7 +638,7 @@ namespace PixelWizards.Utilities
 				}
 
 				if (renderer is not SpriteRenderer) continue;
-				
+
 				var tSpriteRenderer = (SpriteRenderer)renderer;
 
 				if (tSpriteRenderer.sprite != null)
@@ -698,12 +698,12 @@ namespace PixelWizards.Utilities
 			{
 				var tMaterial = tMaterialDetails.material;
 				if (tMaterial == null) continue;
-				
+
 				var dependencies = EditorUtility.CollectDependencies(new UnityEngine.Object[] { tMaterial });
 				foreach (var obj in dependencies)
 				{
 					if (obj is not Texture) continue;
-					
+
 					var tTexture = obj as Texture;
 					var tTextureDetail = GetTextureDetail(tTexture, tMaterial, tMaterialDetails);
 					tTextureDetail.isSky = tMaterialDetails.isSky;
@@ -716,7 +716,7 @@ namespace PixelWizards.Utilities
 				if (tMaterial.HasProperty("_MainTex"))
 				{
 					if (tMaterial.mainTexture == null || dependencies.Contains(tMaterial.mainTexture)) continue;
-						
+
 					var tTextureDetail = GetTextureDetail(tMaterial.mainTexture, tMaterial, tMaterialDetails);
 					ActiveTextures.Add(tTextureDetail);
 				}
@@ -834,19 +834,19 @@ namespace PixelWizards.Utilities
 							var clip = m as AnimationClip;
 
 							if (clip == null) continue;
-							
+
 							var ecbs = AnimationUtility.GetObjectReferenceCurveBindings(clip);
 
 							foreach (var ecb in ecbs)
 							{
 								if (ecb.propertyName != "m_Sprite") continue;
-								
+
 								foreach (var keyframe in AnimationUtility.GetObjectReferenceCurve(clip, ecb))
 								{
 									var tSprite = keyframe.value as Sprite;
 
 									if (tSprite == null) continue;
-												
+
 									var tTextureDetail = GetTextureDetail(tSprite.texture, anim);
 									if (!ActiveTextures.Contains(tTextureDetail))
 									{
@@ -902,7 +902,7 @@ namespace PixelWizards.Utilities
 						{
 							var tMaterial = field.GetValue(script) as Material;
 							if (tMaterial == null) continue;
-							
+
 							var tMatDetails = FindMaterialDetails(tMaterial);
 							if (tMatDetails == null)
 							{
@@ -926,7 +926,7 @@ namespace PixelWizards.Utilities
 							foreach (var obj in dependencies)
 							{
 								if (obj is not Texture) continue;
-								
+
 								Texture tTexture = obj as Texture;
 								var tTextureDetail = GetTextureDetail(tTexture, tMaterial, tMatDetails);
 								if (!ActiveTextures.Contains(tTextureDetail))
@@ -975,7 +975,7 @@ namespace PixelWizards.Utilities
 				return (T[])meshfilters.ToArray();
 			}
 			else
-				return (T[])FindObjectsByType(typeof(T), FindObjectsSortMode.None);
+				return (T[])FindObjectsByType(typeof(T));
 		}
 
 		private TextureDetails GetTextureDetail(Texture tTexture, Material tMaterial, MaterialDetails tMaterialDetails)
