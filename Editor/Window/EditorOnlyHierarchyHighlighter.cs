@@ -16,16 +16,16 @@ namespace PixelWizards.EditorTools
 
         static EditorOnlyHierarchyHighlighter()
         {
-            EditorApplication.hierarchyWindowItemOnGUI -= OnHierarchyGUI;
-            EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyGUI;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI -= OnHierarchyGUI;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI += OnHierarchyGUI;
 
             // Simple built-in icon (you can swap this)
             badgeTexture = EditorGUIUtility.IconContent("console.warnicon").image as Texture2D;
         }
 
-        private static void OnHierarchyGUI(int instanceID, Rect selectionRect)
+        private static void OnHierarchyGUI(EntityId entityId, Rect selectionRect)
         {
-            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            GameObject go = EditorUtility.EntityIdToObject(entityId) as GameObject;
             if (go == null || !go.CompareTag("EditorOnly"))
                 return;
 
@@ -58,7 +58,7 @@ namespace PixelWizards.EditorTools
 
         private static void DrawBadge(Rect rect)
         {
-            if (badgeTexture == null)
+            if (!badgeTexture)
                 return;
 
             Rect iconRect = rect;
