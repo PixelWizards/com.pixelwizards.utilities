@@ -29,7 +29,12 @@ namespace PixelWizards.Utilities
                 return;
             }
 
+#if UNITY_6000_5_OR_NEWER
             s_WorkList = Object.FindObjectsByType<Rigidbody>();
+#else
+            s_WorkList = Object.FindObjectsByType<Rigidbody>(
+                FindObjectsSortMode.None);
+#endif
 
             if (s_WorkList.Length == 0)
             {

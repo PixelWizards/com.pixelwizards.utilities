@@ -1,3 +1,4 @@
+
 using UnityEditor;
 using UnityEngine;
 
@@ -6,8 +7,11 @@ namespace PixelWizards.EditorTools
     [InitializeOnLoad]
     public static class EditorOnlyHierarchyHighlighter
     {
-        private static readonly Color BackgroundColor = new Color(1f, 0.2f, 0.2f, 0.16f);
-        private static readonly Color LabelColor = new Color(1f, 0.4f, 0.4f, 1f);
+        private static readonly Color BackgroundColor =
+            new Color(1f, 0.2f, 0.2f, 0.16f);
+
+        private static readonly Color LabelColor =
+            new Color(1f, 0.4f, 0.4f, 1f);
 
         // Toggle this if you want a badge icon
         private const bool ShowBadge = true;
@@ -16,16 +20,45 @@ namespace PixelWizards.EditorTools
 
         static EditorOnlyHierarchyHighlighter()
         {
-            EditorApplication.hierarchyWindowItemByEntityIdOnGUI -= OnHierarchyGUI;
-            EditorApplication.hierarchyWindowItemByEntityIdOnGUI += OnHierarchyGUI;
+#if UNITY_6000_5_OR_NEWER
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI
+                -= OnHierarchyGUI;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI
+                += OnHierarchyGUI;
+#else
+            EditorApplication.hierarchyWindowItemOnGUI
+                -= OnHierarchyGUI;
+            EditorApplication.hierarchyWindowItemOnGUI
+                += OnHierarchyGUI;
+#endif
 
-            // Simple built-in icon (you can swap this)
-            badgeTexture = EditorGUIUtility.IconContent("console.warnicon").image as Texture2D;
+            badgeTexture = EditorGUIUtility
+                .IconContent("console.warnicon").image as Texture2D;
         }
 
-        private static void OnHierarchyGUI(EntityId entityId, Rect selectionRect)
+#if UNITY_6000_5_OR_NEWER
+        private static void OnHierarchyGUI(
+            EntityId entityId, Rect selectionRect)
         {
-            GameObject go = EditorUtility.EntityIdToObject(entityId) as GameObject;
+            GameObject go =
+                EditorUtility.EntityIdToObject(entityId) as GameObject;
+
+            DrawHierarchyItem(go, selectionRect);
+        }
+#else
+        private static void OnHierarchyGUI(
+            int instanceId, Rect selectionRect)
+        {
+            GameObject go =
+                EditorUtility.InstanceIDToObject(instanceId) as GameObject;
+
+            DrawHierarchyItem(go, selectionRect);
+        }
+#endif
+
+        private static void DrawHierarchyItem(
+            GameObject go, Rect selectionRect)
+        {
             if (go == null || !go.CompareTag("EditorOnly"))
                 return;
 

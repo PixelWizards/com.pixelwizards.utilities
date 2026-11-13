@@ -961,22 +961,39 @@ namespace PixelWizards.Utilities
 			return allGo.ToArray();
 		}
 
+		
 		private T[] FindObjects<T>() where T : Object
 		{
 			if (IncludeDisabledObjects)
 			{
-				var meshfilters = new List<T>();
+				var components = new List<T>();
 				var allGo = GetAllRootGameObjects();
+
 				foreach (var go in allGo)
 				{
-					var tgo = go.GetComponentsInChildren<Transform>(true).ToArray();
-					meshfilters.AddRange(from tr in tgo where tr.GetComponent<T>() select tr.GetComponent<T>());
+					var transforms = go.GetComponentsInChildren<Transform>(true);
+
+					foreach (var tr in transforms)
+					{
+						var component = tr.GetComponent<T>();
+						if (component != null)
+						{
+							components.Add(component);
+						}
+					}
 				}
-				return (T[])meshfilters.ToArray();
+
+				return components.ToArray();
 			}
-			else
-				return (T[])FindObjectsByType(typeof(T));
+
+#if UNITY_6000_5_OR_NEWER
+    return Object.FindObjectsByType<T>();
+#else
+			return Object.FindObjectsByType<T>(
+				FindObjectsSortMode.None);
+#endif
 		}
+
 
 		private TextureDetails GetTextureDetail(Texture tTexture, Material tMaterial, MaterialDetails tMaterialDetails)
 		{
